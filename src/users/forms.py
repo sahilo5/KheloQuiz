@@ -33,17 +33,6 @@ class CustomUserCreationForm(UserCreationForm):
         }
     )
 
-    age = forms.IntegerField(
-        required=True,
-        min_value=18,
-        max_value=100,
-        error_messages={
-            "required": "Age is required.",
-            "min_value": "You must be at least 18 years old.",
-            "max_value": "Age cannot exceed 100 years."
-        }
-    )
-
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'age', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
