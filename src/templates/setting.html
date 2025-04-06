@@ -1,5 +1,77 @@
 {% extends 'layouts/base.html' %}
-
 {% block content %}
-    <h2 class="text-2xl font-bold">Welcome to Your Setting page!</h2>
+<div class="min-h-screen bg-gradient-to-br from-blue-300 to-purple-400 flex justify-center items-center p-6">
+    <div class="backdrop-blur-lg bg-white/30 p-8 rounded-3xl shadow-xl w-full max-w-3xl border border-white/20">
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-6">Settings</h2>
+        
+        <!-- Profile Settings -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <h3 class="text-xl font-semibold mb-4">Profile</h3>
+            <div class="flex items-center space-x-4">
+                <img src="/static/images/user.png" alt="User" class="h-16 w-16 rounded-full shadow-md">
+                <div>
+                    <p class="text-lg font-medium text-gray-800">{{ request.user.username }}</p>
+                    <p class="text-gray-600">{{ request.user.email }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <h3 class="text-xl font-semibold mb-4">Preferences</h3>
+            <div class="flex justify-between items-center py-2">
+                <span class="text-gray-700">Enable Dark Mode</span>
+                <button id="darkModeToggle" class="w-12 h-6 bg-gray-300 rounded-full relative transition">
+                    <span class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow-md transition"></span>
+                </button>
+            </div>
+            <div class="flex justify-between items-center py-2">
+                <span class="text-gray-700">Receive Notifications</span>
+                <input type="checkbox" class="toggle-checkbox hidden" id="notificationsToggle">
+                <label for="notificationsToggle" class="cursor-pointer w-12 h-6 bg-gray-300 rounded-full flex items-center p-1 transition">
+                    <span class="w-4 h-4 bg-white rounded-full shadow-md transform transition"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+            <h3 class="text-xl font-semibold mb-4">Security</h3>
+            <button class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition">Change Password</button>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="text-center">
+            <a href="{% url 'logout' %}" class="text-red-600 font-semibold hover:underline">Logout</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const darkModeToggle = document.getElementById("darkModeToggle");
+        const body = document.body;
+
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark", "bg-gray-900", "text-white");
+            darkModeToggle.classList.add("bg-indigo-600");
+            darkModeToggle.children[0].classList.add("translate-x-6");
+        }
+
+        darkModeToggle.addEventListener("click", () => {
+            body.classList.toggle("dark");
+            body.classList.toggle("bg-gray-900");
+            body.classList.toggle("text-white");
+
+            darkModeToggle.classList.toggle("bg-indigo-600");
+            darkModeToggle.children[0].classList.toggle("translate-x-6");
+
+            if (body.classList.contains("dark")) {
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                localStorage.setItem("darkMode", "disabled");
+            }
+        });
+    });
+</script>
 {% endblock %}
