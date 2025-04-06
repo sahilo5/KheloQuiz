@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import date
-
-today = date.today()
+from django.utils import timezone
+today = timezone.now()
 
 # Quiz Table: Stores quizzes created by users
 class Quiz(models.Model):

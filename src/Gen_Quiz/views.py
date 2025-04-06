@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import requests
 import json
+import re
 
 def fetch_quiz_data(topic, num_questions):
     """Fetch quiz questions from the AI API"""
@@ -13,7 +14,7 @@ def fetch_quiz_data(topic, num_questions):
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-            "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
             "Content-Type": "application/json",
         },
         data=json.dumps({
@@ -24,18 +25,32 @@ def fetch_quiz_data(topic, num_questions):
     
     
     response_json = response.json()
+
+
     if "choices" in response_json and response_json["choices"]:
         quiz_content = response_json["choices"][0].get("message", {}).get("content", "")
 
         if quiz_content.startswith("\\boxed{"):
             quiz_content = quiz_content[6:-1]  # Remove \boxed{ and trailing }
+# Remove markdown code block
+        quiz_content = re.sub(r"^```json\s*|```$", "", quiz_content.strip(), flags=re.MULTILINE)
+
+        # Fix double curly braces (common LLM mistake)
+        quiz_content = re.sub(r"^\s*{\s*{", "{", quiz_content)
+        quiz_content = re.sub(r"}\s*}\s*$", "}", quiz_content)
+
+        # Optional: remove extra whitespace or lines
+        quiz_content = quiz_content.strip()
+
+        print("✅ Cleaned content to parse:")
         print(quiz_content)
         try:
-            quiz_json = json.loads(quiz_content)  # Convert string to JSON
+            quiz_json = json.loads(quiz_content) 
+            return quiz_json # Convert string to JSON
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Failed to parse JSON from API response"}, status=400)
+            return {"error": "Failed to parse JSON from API response"}
     else:
-        return JsonResponse({"error": "Invalid API response structure"}, status=400)
+        return {"error": "Invalid API response structure"}
 
 @login_required
 def create_quiz(request):
@@ -43,41 +58,49 @@ def create_quiz(request):
         topic = request.POST.get("topic", "General Knowledge")  # Default topic
         num_questions = request.POST.get("num_questions", "5")  # Default number of questions
 
-        quiz_data = fetch_quiz_data(topic, num_questions)
-        
-        if not quiz_data:
-            return JsonResponse({"error": "Failed to fetch quiz data"}, status=400)
-        
-        # Create a new Quiz instance
-        quiz = Quiz.objects.create(
-            user=request.user,
-            name=f"{topic} Quiz",
-            topic=topic,
-            total_questions=num_questions,
-            total_marks=num_questions  # Assuming 1 mark per question
-        )
-        
-        # Store Questions
-        for question_data in quiz_data.get("questions", []):
-            # Ensure options is stored as a JSON object
-            options = question_data.get("options", [])
-           
-            if not isinstance(options, list):
-                options = []
+        raw_quiz = fetch_quiz_data(topic, num_questions)
 
-            # Create Question
-            Question.objects.create(
-                quiz=quiz,
-                text=question_data["question"],
-                question_type="Multiple Choice Question",  # Assuming all questions are MCQ
-                options=options,  # JSONField must store a valid list
-                correct_answer=question_data["answer"],
-                explanation=question_data.get("explanation", "")
-            )
-        
-        return JsonResponse({"message": "Quiz created successfully", "quiz_id": quiz.id})
+    if "questions" in raw_quiz:
+        return render(request, "quiz_form.html", {"quiz": raw_quiz["questions"]})
+    else:
+        return render(request, "quiz_form.html", {"error": raw_quiz.get("error", "Something went wrong")})  
     
-    return JsonResponse({"error": "Invalid request method"}, status=405)
+    return render(request, "quiz_form.html")
+
+    #     if not quiz_data:
+    #         return JsonResponse({"error": "Failed to fetch quiz data"}, status=400)
+        
+    #     # Create a new Quiz instance
+    #     quiz = Quiz.objects.create(
+    #         user=request.user,
+    #         name=f"{topic} Quiz",
+    #         topic=topic,
+    #         total_questions=num_questions,
+    #         total_marks=num_questions  # Assuming 1 mark per question
+    #     )
+        
+        
+    #     # Store Questions
+    #     for question_data in quiz_data.get("questions", []):
+    #         # Ensure options is stored as a JSON object
+    #         options = question_data.get("options", [])
+           
+    #         if not isinstance(options, list):
+    #             options = []
+    #         print(options)
+    #         # Create Question
+    #         Question.objects.create(
+    #             quiz_id=quiz.id,
+    #             text=question_data["question"],
+    #             question_type="MCQ",  # Assuming all questions are MCQ
+    #             options=options,  # JSONField must store a valid list
+    #             correct_answer=question_data["answer"],
+    #             explanation=question_data.get("explanation", "")
+    #         )
+        
+    #     return JsonResponse({"message": "Quiz created successfully", "quiz_id": quiz.id})
+    
+    # return JsonResponse({"error": "Invalid request method"}, status=405)
     
     
         
