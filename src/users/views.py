@@ -14,7 +14,7 @@ def register_view(request):
             login(request, user)
             return redirect('dashboard')
     else:
-        form = CustomUserCreationForm(initial={'username': '', 'first_name': '', 'last_name': '', 'email': '', 'age': '', 'password1': '', 'password2': ''})
+        form = CustomUserCreationForm(initial={'username': '', 'first_name': '', 'last_name': '', 'email': '', 'password1': '', 'password2': ''})
     return render(request, 'registration/register.html', {'form': form})
 
 @guest
