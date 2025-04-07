@@ -14,7 +14,7 @@ def fetch_quiz_data(topic, num_questions):
     response = requests.post(
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
             "Content-Type": "application/json",
         },
         data=json.dumps({
