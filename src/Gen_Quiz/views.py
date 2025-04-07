@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Quiz, Question, UserResponse
 from datetime import datetime
 from django.http import JsonResponse
@@ -6,15 +6,17 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 import re
+from datetime import date
+today = date.today()
 
 def fetch_quiz_data(topic, num_questions):
     """Fetch quiz questions from the AI API"""
     prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
 
-    response = requests.post(
+    response = requests.post(   
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
             "Content-Type": "application/json",
         },
         data=json.dumps({
@@ -55,18 +57,69 @@ def fetch_quiz_data(topic, num_questions):
 @login_required
 def create_quiz(request):
     if request.method == "POST":
-        topic = request.POST.get("topic", "General Knowledge")  # Default topic
-        num_questions = request.POST.get("num_questions", "5")  # Default number of questions
-
+        topic = request.POST.get("topic", "General Knowledge")
+        num_questions = int(request.POST.get("num_questions", "5"))
+        
         raw_quiz = fetch_quiz_data(topic, num_questions)
 
-    if "questions" in raw_quiz:
-        return render(request, "quiz_form.html", {"quiz": raw_quiz["questions"]})
-    else:
-        return render(request, "quiz_form.html", {"error": raw_quiz.get("error", "Something went wrong")})  
-    
+        if "questions" in raw_quiz:
+            questions = raw_quiz["questions"]
+
+            # ✅ Save quiz metadata to database
+            quiz_obj = Quiz.objects.create(
+                user=request.user,
+                name=f"{topic} Quiz",
+                topic=topic,
+                total_questions=len(questions),
+                total_marks=len(questions),  # 1 mark per question (customize as needed)
+                created_at=today    
+            )
+
+            # ✅ Create Question objects with question numbers
+            for idx, q in enumerate(questions, start=1):
+                Question.objects.create(
+                    quiz=quiz_obj,
+                    number=idx,  # 👈 Add question number here
+                    text=q.get("question", ""),
+                    question_type='MCQ',
+                    options=q.get("options", []),
+                    correct_answer=q.get("answer", ""),
+                    explanation=q.get("explanation", "")
+                )
+            # ✅ Save quiz and metadata to session
+            request.session['quiz'] = questions
+            request.session['current_q'] = 0
+            request.session['quiz_id'] = quiz_obj.id  # store quiz ID for later tracking
+
+            return redirect('quiz_question')
+        else:
+            return render(request, "quiz_form.html", {
+                "error": raw_quiz.get("error", "Something went wrong")
+            })
+
     return render(request, "quiz_form.html")
 
+
+@login_required
+def quiz_question(request):
+    quiz = request.session.get('quiz', [])
+    current_q = request.session.get('current_q', 0)
+
+    if current_q >= len(quiz):
+        return render(request, "quiz_complete.html")  # or redirect to summary
+
+    question = quiz[current_q]
+
+    if request.method == "POST":
+        # Save user response if needed here
+        request.session['current_q'] = current_q + 1
+        return redirect('quiz_question')
+
+    return render(request, "quiz_question.html", {
+        "question": question,
+        "index": current_q + 1,
+        "total": len(quiz)
+    })
     #     if not quiz_data:
     #         return JsonResponse({"error": "Failed to fetch quiz data"}, status=400)
         
