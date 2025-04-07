@@ -1,0 +1,67 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<body class="bg-gray-50 text-gray-900">
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-blue-500 to-purple-600 text-white py-20 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl font-extrabold">About KheloQuiz</h1>
+            <p class="mt-4 text-lg opacity-90">Empowering minds through interactive AI-powered quizzes.</p>
+        </div>
+    </section>
+
+    <!-- Our Mission -->
+    <section class="py-16 px-6 max-w-6xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-800">Our Mission</h2>
+        <p class="mt-4 text-lg text-red-600">At KheloQuiz, we strive to make learning engaging and fun by leveraging AI to generate personalized quizzes for students, educators, and professionals.</p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-white px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+            <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                <h3 class="text-xl font-bold">AI-Powered Quizzes</h3>
+                <p class="mt-2 opacity-90">Automatically generate quizzes tailored to your knowledge level.</p>
+            </div>
+            <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white">
+                <h3 class="text-xl font-bold">Performance Analytics</h3>
+                <p class="mt-2 opacity-90">Track your progress and identify strengths & weaknesses.</p>
+            </div>
+            <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-yellow-500 to-red-500 text-white">
+                <h3 class="text-xl font-bold">Multi-Category Quizzes</h3>
+                <p class="mt-2 opacity-90">Choose from a variety of topics across different subjects.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Team -->
+    <section class="py-16 px-6 max-w-6xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-800">Meet Our Team</h2>
+        <div class="grid md:grid-cols-3 gap-8 mt-6">
+            <div class="p-4 bg-white shadow-lg rounded-lg">
+                <img src="{% static 'images/user1.jpg' %}" alt="User 1" class="w-32 h-32 rounded-full mx-auto">
+                <h3 class="mt-4 text-xl font-bold">Roshan Dalvi</h3>
+                <p class="text-gray-600">Developer</p>
+            </div>
+            <div class="p-4 bg-white shadow-lg rounded-lg">
+                <img src="{% static 'images/user2.jpg' %}" alt="User 2" class="w-32 h-32 rounded-full mx-auto">
+                <h3 class="mt-4 text-xl font-bold">Jane Smith</h3>
+                <p class="text-gray-600">Lead Developer</p>
+            </div>
+            <div class="p-4 bg-white shadow-lg rounded-lg">
+                <img src="{% static 'images/user3.jpg' %}" alt="User 3" class="w-32 h-32 rounded-full mx-auto">
+                <h3 class="mt-4 text-xl font-bold">Emily Davis</h3>
+                <p class="text-gray-600">UI/UX Designer</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center px-6">
+        <h2 class="text-3xl font-bold">Join KheloQuiz Today!</h2>
+        <p class="mt-4 text-lg opacity-90">Start testing your knowledge with AI-generated quizzes.</p>
+        <a href="{% url 'register' %}" class="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-lg text-lg font-bold shadow-md hover:bg-gray-100">Get Started</a>
+    </section>
+</body>
+{% endblock %}

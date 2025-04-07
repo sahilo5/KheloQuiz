@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+
+    <!-- Dashboard Content -->
+    <div class="p-6 max-w-5xl mx-auto">
+        <section class="mb-6 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Welcome, {{ request.user.username }}!</h1>
+            <p>Age: {{ request.user.userprofile.age }}</p>
+            <p class="text-gray-600 text-lg">You're now logged in to your dashboard.</p>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold mb-4">Generate Quiz</h2>
+            <div class="space-y-4">
+                <form method="post" class="space-y-4" action="{% url 'create_quiz' %}">
+                    {% csrf_token %}
+                <input type="text" name="topic" placeholder="Enter Quiz Topic" class="w-full md:w-2/3 p-4 border rounded-lg shadow-md">
+                <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                    <select name="num_questions" class="p-4 border rounded-lg shadow-md bg-white text-gray-900 w-full sm:w-auto">
+                        <option disabled selected>Choose Number of Questions</option>
+                        <option value="3">3 Questions</option>
+                        <option value="5">5 Questions</option>
+                        <option value="10">10 Questions</option>
+                    </select>
+                    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Generate Quiz</button>
+        </form>
+                    <a href="{% url 'generate_quiz' %}" class="bg-gradient-to-r from-pink-500 to-indigo-600 text-white px-6 py-2 rounded-full text-lg w-full sm:w-auto shadow-lg">
+                        Generate Quiz
+                    </a>                </div>
+            </div>
+        </section>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-bold mb-2">Your Recent Quizzes</h2>
+            <ul>
+                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
+                    <h3 class="font-semibold">Python Basics</h3>
+                    <p>Score: 85/100</p>
+                    <p>Status: Completed</p>
+                </li>
+                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
+                    <h3 class="font-semibold">Data Structures</h3>
+                    <p>Score: 72/100</p>
+                    <p>Status: Completed</p>
+                </li>
+                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
+                    <h3 class="font-semibold">AI Concepts</h3>
+                    <p>Score: 90/100</p>
+                    <p>Status: Completed</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Progress Graph -->
+        <section class="mb-6">
+            <h2 class="text-xl font-bold mb-4">Quiz Progress</h2>
+            <div class="w-full bg-gray-200 rounded-full h-6">
+                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 85%">Python Basics - 85%</div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
+                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 72%">Data Structures - 72%</div>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
+                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 90%">AI Concepts - 90%</div>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}
