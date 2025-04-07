@@ -2,3 +2,6 @@ env
 settings.py
 theme
 __pycache__
+__pycache__/
+*.py[cod]
+*$py.class
