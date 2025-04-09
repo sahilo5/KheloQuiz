@@ -9,6 +9,13 @@
 </head>
 <body class="bg-green-50 text-green-800 p-8 text-center">
   <h1 class="text-3xl font-bold mb-4">🎉 Quiz Completed!</h1>
-  <p class="text-lg">Great job! You’ve finished all the questions.</p>
+  <p class="text-lg mb-2">Great job! You’ve finished all the questions.</p>
+  <p class="text-xl font-semibold">Your Score: {{ score }} / {{ total }}</p>
+
+  <div class="mt-6">
+    <a href="{% url 'home' %}" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
+      Back to Home
+    </a>
+  </div>
 </body>
 </html>

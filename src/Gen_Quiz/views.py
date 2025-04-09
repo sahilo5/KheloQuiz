@@ -16,7 +16,7 @@ def fetch_quiz_data(topic, num_questions):
     response = requests.post(   
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
             "Content-Type": "application/json",
         },
         data=json.dumps({
@@ -103,23 +103,73 @@ def create_quiz(request):
 def quiz_question(request):
     quiz = request.session.get('quiz', [])
     current_q = request.session.get('current_q', 0)
+    selected_answers = request.session.get('selected_answers', {})
 
-    if current_q >= len(quiz):
-        return render(request, "quiz_complete.html")  # or redirect to summary
-
-    question = quiz[current_q]
-
+    # Save answer from POST
     if request.method == "POST":
-        # Save user response if needed here
-        request.session['current_q'] = current_q + 1
-        return redirect('quiz_question')
+        selected_option = request.POST.get('answer')
+        if selected_option:
+            selected_answers[str(current_q)] = selected_option
+            request.session['selected_answers'] = selected_answers
+
+        # Navigation logic
+        if 'next' in request.POST:
+            current_q = min(current_q + 1, len(quiz) - 1)
+        elif 'prev' in request.POST:
+            current_q = max(current_q - 1, 0)
+        elif "submit" in request.POST:
+            score = 0
+            total = len(quiz)
+
+            quiz_id = request.session.get("quiz_id")
+            try:
+                quiz_obj = Quiz.objects.get(id=quiz_id, user=request.user)
+            except Quiz.DoesNotExist:
+                quiz_obj = None
+
+            for i, q in enumerate(quiz):
+                selected = selected_answers.get(str(i))  # User's selected option
+                correct_option = q.get("answer")         # Full correct answer like "C) Fuji"
+                is_correct = selected == correct_option
+                marks = 1 if is_correct else 0
+                score += marks
+
+                # Optional: Match the question from DB (assuming exact question text matches)
+                db_question = Question.objects.filter(text=q.get("question")).first()
+
+                if quiz_obj and db_question:
+                    UserResponse.objects.create(
+                        user=request.user,
+                        quiz=quiz_obj,
+                        question=db_question,
+                        selected_answer=selected,
+                        is_correct=is_correct,
+                        marks_obtained=marks
+                    )
+
+            # Save total score
+            if quiz_obj:
+                quiz_obj.obtained_marks = score
+                quiz_obj.save()
+
+            return render(request, "quiz_complete.html", {
+                "score": score,
+                "total": total,
+            })
+
+        request.session['current_q'] = current_q
+
+    question = quiz[current_q] if current_q < len(quiz) else None
 
     return render(request, "quiz_question.html", {
         "question": question,
         "index": current_q + 1,
-        "total": len(quiz)
+        "total": len(quiz),
+        "is_first": current_q == 0,
+        "is_last": current_q == len(quiz) - 1,
+        "selected_answer": selected_answers.get(str(current_q), ""),
     })
-    #     if not quiz_data:
+
     #         return JsonResponse({"error": "Failed to fetch quiz data"}, status=400)
         
     #     # Create a new Quiz instance
