@@ -17,19 +17,40 @@
             {% csrf_token %}
             <ul class="space-y-2">
                 {% for option in question.options %}
-                <li>
-                    <label class="flex items-center space-x-2">
-                        <input type="radio" name="answer" value="{{ option }}" required>
-                        <span>{{ option }}</span>
-                    </label>
-                </li>
+                    {% with option_str=option|stringformat:"s" selected_str=selected_answer|stringformat:"s" %}
+                    <li>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="answer" value="{{ option }}"
+                                {% if option_str == selected_str %}checked{% endif %}>
+                            <span>{{ option }}</span>
+                        </label>
+                    </li>
+                    {% endwith %}
                 {% endfor %}
             </ul>
+            
 
-            <div class="mt-6 flex justify-between items-center">
-                <button type="submit"
+
+
+            <div class="mt-6 flex justify-between items-center space-x-4">
+                <!-- Previous Button -->
+                {% if not is_first %}
+                <button name="prev" type="submit"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Previous</button>
+                {% else %}
+                <span class="invisible px-4 py-2">Previous</span> <!-- keeps space -->
+                {% endif %}
+
+                <!-- Submit or Next Button -->
+                {% if is_last %}
+                <button name="submit" type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Submit</button>
+                {% else %}
+                <button name="next" type="submit"
                     class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Next</button>
+                {% endif %}
             </div>
+
         </form>
     </div>
 </body>
