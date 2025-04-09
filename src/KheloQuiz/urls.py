@@ -12,5 +12,5 @@ urlpatterns = [
     path('about/', about, name='about'),
     path('setting/', setting, name='setting'),
     path("quiz/", create_quiz, name="quiz"),
-    path('quiz-question/', quiz_question, name='quiz_question')
+    path('quiz-question/', quiz_question, name='quiz_question'),
 ]
