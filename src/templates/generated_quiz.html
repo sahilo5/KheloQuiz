@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KheloQuiz - Quiz Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    ::-webkit-scrollbar {
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #e5e7eb;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #9333ea;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full">
+
+    <!-- Question Number Navigation Section -->
+    <div class="relative flex items-center justify-center mb-8">
+      <!-- Selected Number (Separated) -->
+      <div class="w-12 h-12 flex items-center justify-center rounded-full bg-purple-600 text-white text-lg font-bold shadow-lg mr-4" id="selectedNumber">
+        1
+      </div>
+
+      <!-- Number Slider Container -->
+      <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-300 rounded-xl p-2 bg-gray-100" style="width: 320px;">
+        <div class="flex space-x-4 w-max" id="questionNumbers">
+          <!-- Number 1 (Selected) -->
+          <button class="w-10 h-10 flex items-center justify-center rounded-full bg-purple-600 text-white font-bold" onclick="goToQuestion(1)">
+            1
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini Slider for Progress -->
+    <div class="relative flex justify-center">
+      <div class="w-64 h-2 bg-gray-300 rounded-full">
+        <div class="h-2 bg-purple-600 rounded-full" id="progressBar" style="width: 10%;"></div>
+      </div>
+    </div>
+
+    <!-- Question Section -->
+    <h2 class="text-purple-600 font-bold text-lg mt-8" id="questionTitle">QUESTION 1:</h2>
+    <p class="text-2xl font-semibold text-gray-800 my-4" id="questionText">
+      What is a polygon that has five sides and five angles called?
+    </p>
+
+    <!-- Options Section -->
+    <div class="space-y-4" id="optionsContainer">
+      <label class="block w-full cursor-pointer">
+        <input type="radio" name="answer" class="hidden" />
+        <div class="border-2 border-gray-300 rounded-lg py-3 px-4 hover:bg-blue-200">Hexagon</div>
+      </label>
+
+      <label class="block w-full cursor-pointer">
+        <input type="radio" name="answer" class="hidden" />
+        <div class="border-2 border-gray-300 rounded-lg py-3 px-4 hover:bg-blue-200">Quadrilateral</div>
+      </label>
+
+      <label class="block w-full cursor-pointer">
+        <input type="radio" name="answer" class="hidden" />
+        <div class="border-2 border-gray-300 rounded-lg py-3 px-4 hover:bg-blue-200">Pentagon</div>
+      </label>
+
+      <label class="block w-full cursor-pointer">
+        <input type="radio" name="answer" class="hidden" />
+        <div class="border-2 border-gray-300 rounded-lg py-3 px-4 hover:bg-blue-200">Octagon</div>
+      </label>
+    </div>
+
+    <!-- Navigation Buttons with Same Size -->
+    <div class="flex justify-between mt-8">
+      <button onclick="prevQuestion()" class="bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold w-32 hover:opacity-90">
+        Previous
+      </button>
+      <button onclick="nextQuestion()" class="bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold w-32 hover:opacity-90">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const totalQuestions = 10;
+    let currentQuestion = 1;
+
+    // Generate number buttons from 2 to 10
+    const numberContainer = document.getElementById('questionNumbers');
+    for (let i = 2; i <= totalQuestions; i++) {
+      const button = document.createElement('button');
+      button.classList.add('w-10', 'h-10', 'flex', 'items-center', 'justify-center', 'rounded-full', 'bg-gray-500', 'text-white', 'font-bold');
+      button.textContent = i;
+      button.onclick = () => goToQuestion(i);
+      numberContainer.appendChild(button);
+    }
+
+    function goToQuestion(number) {
+      currentQuestion = number;
+      updateUI();
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < totalQuestions) {
+        currentQuestion++;
+        updateUI();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        updateUI();
+      }
+    }
+
+    function updateUI() {
+      // Update Selected Number
+      document.getElementById('selectedNumber').textContent = currentQuestion;
+      
+      // Update Progress Bar
+      const progress = (currentQuestion / totalQuestions) * 100;
+      document.getElementById('progressBar').style.width = ${progress}%;
+
+      // Update Number Colors
+      [...numberContainer.children].forEach((btn, index) => {
+        if (index + 1 === currentQuestion) {
+          btn.classList.remove('bg-gray-500');
+          btn.classList.add('bg-purple-600');
+        } else {
+          btn.classList.remove('bg-purple-600');
+          btn.classList.add('bg-gray-500');
+        }
+      });
+
+      // Adjust Scroll Position
+      const container = document.getElementById('questionNumbers');
+      const button = container.children[currentQuestion - 1];
+      container.scrollTo({
+        left: button.offsetLeft - container.offsetWidth / 2 + button.offsetWidth / 2,
+        behavior: 'smooth',
+      });
+
+      // Update Question Title and Content
+      document.getElementById('questionTitle').textContent = QUESTION ${currentQuestion}:;
+      document.getElementById('questionText').textContent = This is the content for question ${currentQuestion}.;
+    }
+  </script>
+</body>
+</html>

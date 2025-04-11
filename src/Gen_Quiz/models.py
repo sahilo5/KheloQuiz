@@ -1,12 +1,47 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.timezone import now
 
-# Create your models here.
+# Quiz Table: Stores quizzes created by users
 class Quiz(models.Model):
-    title = models.TextField()
-    topic = models.TextField()
-    noOfQuestions = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="quizzes")
+    name = models.CharField(max_length=255, default="Untitled Quiz")  # Name of the Quiz
+    topic = models.CharField(max_length=255)
+    subtopic = models.CharField(max_length=255, blank=True, null=True)
+    total_questions = models.IntegerField(default=3)
+    total_marks = models.IntegerField(default=3)
+    obtained_marks = models.IntegerField(default=0)
+    created_at = models.DateTimeField(default=now)
 
-class Quiz2(models.Model):
-    title1 = models.TextField()
-    topic1 = models.TextField()
-    noOfQuestions = models.TextField()
+    def __str__(self):
+        return f"{self.name} - {self.topic}"
+
+# Question Table: Stores questions for each quiz
+class Question(models.Model):
+    QUESTION_TYPES = (
+        ('MCQ', 'Multiple Choice Question'),
+        ('FILL', 'Fill in the Blanks'),
+    )
+
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="questions")
+    text = models.TextField()  # Question text
+    question_type = models.CharField(max_length=4, choices=QUESTION_TYPES, default='MCQ')
+    options = models.JSONField(blank=True, null=True)  # Stores MCQ options
+    correct_answer = models.TextField()  # Correct answer 
+    explanation = models.TextField(blank=True, null=True)  # Explanation (optional)
+
+    def __str__(self):
+        return f"Question {self.id} in Quiz {self.quiz.name}"
+
+# UserResponse Table: Stores user responses for each question
+class UserResponse(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="responses")
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name="responses")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="responses")
+    selected_answer = models.TextField(blank=True, null=True)  # Stores user's selected answer
+    is_correct = models.BooleanField(default=False)
+    marks_obtained = models.IntegerField(default=0)
+    answered_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Response by {self.user.username} for {self.question.text}"
