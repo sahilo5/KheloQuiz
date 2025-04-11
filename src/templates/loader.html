@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes push {
+        0% {
+          transform: translate(0, -1em) rotate(-45deg);
+        }
+        5% {
+          transform: translate(0, -1em) rotate(-50deg);
+        }
+        20% {
+          transform: translate(1em, -2em) rotate(47deg);
+        }
+        25% {
+          transform: translate(1em, -2em) rotate(45deg);
+        }
+        30% {
+          transform: translate(1em, -2em) rotate(40deg);
+        }
+        45% {
+          transform: translate(2em, -3em) rotate(137deg);
+        }
+        50% {
+          transform: translate(2em, -3em) rotate(135deg);
+        }
+        55% {
+          transform: translate(2em, -3em) rotate(130deg);
+        }
+        70% {
+          transform: translate(3em, -4em) rotate(217deg);
+        }
+        75% {
+          transform: translate(3em, -4em) rotate(220deg);
+        }
+        100% {
+          transform: translate(0, -1em) rotate(-225deg);
+        }
+      }
+
+      .animate-push {
+        animation: push 2.5s cubic-bezier(0.79, 0, 0.47, 0.97) infinite;
+      }
+    </style>
+  </head>
+  <body class="bg-[#404456] h-screen w-screen m-0 p-0">
+    <div
+      id="loader"
+      class="absolute top-1/2 left-1/2 -mt-[2.7em] -ml-[2.7em] w-[5.4em] h-[5.4em] bg-[#404456]"
+    >
+      <div
+        id="box"
+        class="absolute left-0 -bottom-[0.1em] w-[1em] h-[1em] border-[0.25em] border-[whitesmoke] rounded-[15%] bg-transparent animate-push"
+      ></div>
+
+      <div
+        id="hill"
+        class="absolute top-[1.7em] left-[1.7em] w-[7.1em] h-[7.1em] border-l-[0.25em] border-l-[whitesmoke] transform rotate-45"
+      >
+        <div
+          class="absolute left-0 w-[7.1em] h-[7.1em] bg-[#404456]"
+        ></div>
+      </div>
+    </div>
+  </body>
+</html>

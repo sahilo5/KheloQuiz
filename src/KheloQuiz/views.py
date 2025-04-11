@@ -10,8 +10,10 @@ def about(request):
     return render(request, 'about.html') 
 
 def setting(request):
-    return render(request, 'setting.html') 
+    return render(request, 'setting.html')
 
+def profile(request):
+    return render(request, 'Profile.html') 
 
 
     

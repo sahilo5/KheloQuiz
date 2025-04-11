@@ -5,19 +5,16 @@ from .forms import CustomUserCreationForm
 from .middlewares import auth, guest
 # Create your views here.
 
-
 @guest
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            age = form.cleaned_data.get('age')
-            UserProfile.objects.create(user=user, age=age)
             login(request, user)
             return redirect('dashboard')
     else:
-        form = CustomUserCreationForm(initial={'username': '', 'first_name': '', 'last_name': '', 'email': '', 'age': '', 'password1': '', 'password2': ''})
+        form = CustomUserCreationForm(initial={'username': '', 'first_name': '', 'last_name': '', 'email': '', 'password1': '', 'password2': ''})
     return render(request, 'registration/register.html', {'form': form})
 
 @guest

@@ -5,7 +5,6 @@
     <div class="p-6 max-w-5xl mx-auto">
         <section class="mb-6 text-center">
             <h1 class="text-3xl font-bold text-gray-900">Welcome, {{ request.user.username }}!</h1>
-            <p>Age: {{ request.user.userprofile.age }}</p>
             <p class="text-gray-600 text-lg">You're now logged in to your dashboard.</p>
         </section>
 
@@ -22,11 +21,9 @@
                         <option value="5">5 Questions</option>
                         <option value="10">10 Questions</option>
                     </select>
-                    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Generate Quiz</button>
+                    <button type="submit" class="w-48 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Generate Quiz</button>
         </form>
-                    <a href="{% url 'generate_quiz' %}" class="bg-gradient-to-r from-pink-500 to-indigo-600 text-white px-6 py-2 rounded-full text-lg w-full sm:w-auto shadow-lg">
-                        Generate Quiz
-                    </a>                </div>
+        </div>
             </div>
         </section>
 

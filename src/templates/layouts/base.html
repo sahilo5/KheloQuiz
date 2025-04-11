@@ -8,57 +8,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-br from-blue-300 to-purple-400 text-gray-900">
+<body class="bg-gradient-to-br from-blue-200 to-purple-300 text-gray-900">
    
     <!-- Navbar -->
     <nav class="bg-white shadow-md px-6 py-3 flex items-center justify-between flex-wrap">
-        <!-- Left: Brand -->
-        <h1 class="text-xl font-extrabold">
-            <span class="text-black">Khelo</span><span class="text-blue-600">Quiz</span>
-        </h1>
+       <!-- Left: Brand -->
+<a href="{% url 'dashboard' %}" class="flex items-center">
+    <img src="{% static 'images/logo.png' %}" alt="KheloQuiz Logo" class="h-10 w-auto">
+  </a>
+  
         
         <!-- Right: Navigation Links & Controls -->
         <div class="flex items-center space-x-3 md:space-x-5">
             <a href="{% url 'about' %}" class="text-black font-semibold border border-gray-700 px-4 py-1 rounded-lg transition duration-300 hover:bg-indigo-600 hover:text-white">About</a>
-            <button id="darkModeToggle" class="p-2 bg-gray-200 rounded-full">🌙</button>
-            <button class="p-2 bg-gray-200 rounded-full">🔔</button>
-            <div class="relative group">
+            <a href="{% url 'setting' %}" class="text-black font-semibold border border-gray-700 px-4 py-1 rounded-lg transition duration-300 hover:bg-indigo-600 hover:text-white">Setting</a>
+            <a href="{% url 'profile' %}">
                 <img src="{% static 'images/user.png' %}" alt="User" class="h-10 w-10 rounded-full cursor-pointer">
-                <div class="absolute right-0 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200">
-                    <a href="{% url 'setting' %}" class="block px-4 py-2 text-black hover:bg-gray-100">Settings</a>
-                    <a href="{% url 'logout' %}" class="block px-4 py-2 text-black hover:bg-gray-100">Sign Out</a>
-                </div>
-            </div>
+              </a>
         </div>
     </nav>
-
     <!-- Page Content -->
     <div class="p-6 max-w-5xl mx-auto">
         {% block content %} {% endblock %}
     </div>
-
-    <!-- Dark Mode Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const darkModeToggle = document.getElementById("darkModeToggle");
-            const body = document.body;
-
-            if (localStorage.getItem("darkMode") === "enabled") {
-                body.classList.add("dark", "bg-gray-900", "text-black");
-            }
-
-            darkModeToggle.addEventListener("click", () => {
-                body.classList.toggle("dark");
-                body.classList.toggle("bg-gray-900");
-                body.classList.toggle("text-black");
-
-                if (body.classList.contains("dark")) {
-                    localStorage.setItem("darkMode", "enabled");
-                } else {
-                    localStorage.setItem("darkMode", "disabled");
-                }
-            });
-        });
-    </script>
 </body>
 </html>
