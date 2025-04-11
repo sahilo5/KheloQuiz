@@ -12,6 +12,9 @@ def about(request):
 def setting(request):
     return render(request, 'setting.html') 
 
+def Profile(request):
+    return render(request, 'Profile.html') 
+
 
 
     
