@@ -16,7 +16,7 @@ def fetch_quiz_data(topic, num_questions):
     response = requests.post(   
         url="https://openrouter.ai/api/v1/chat/completions",
         headers={
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer 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",
             "Content-Type": "application/json",
         },
         data=json.dumps({
@@ -32,6 +32,7 @@ def fetch_quiz_data(topic, num_questions):
     if "choices" in response_json and response_json["choices"]:
         quiz_content = response_json["choices"][0].get("message", {}).get("content", "")
 
+        print(quiz_content)
         if quiz_content.startswith("\\boxed{"):
             quiz_content = quiz_content[6:-1]  # Remove \boxed{ and trailing }
 # Remove markdown code block
@@ -206,5 +207,3 @@ def quiz_question(request):
     # return JsonResponse({"error": "Invalid request method"}, status=405)
     
     
-        
->>>>>>>>> Temporary merge branch 2
