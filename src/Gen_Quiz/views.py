@@ -206,4 +206,5 @@ def quiz_question(request):
     # return JsonResponse({"error": "Invalid request method"}, status=405)
     
     
-            
+        
+>>>>>>>>> Temporary merge branch 2

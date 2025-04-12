@@ -45,3 +45,4 @@ class UserResponse(models.Model):
 
     def __str__(self):
         return f"Response by {self.user.username} for {self.question.text}"
+
