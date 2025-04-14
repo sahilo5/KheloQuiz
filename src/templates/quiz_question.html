@@ -22,20 +22,22 @@
                         {% with option_str=option|stringformat:"s" selected_str=selected_answer|stringformat:"s" %}
                         <li>
                             <label class="block w-full cursor-pointer">
+                                <!-- HIDDEN RADIO BUTTON -->
                                 <input 
                                     type="radio" 
                                     name="answer" 
                                     value="{{ option }}" 
+                                    class="peer hidden"
+                                    {% if option_str == selected_str %}checked{% endif %}
+                                >
                                 
-                                    class=""          
-                                    {% if option_str == selected_str %}checked{% endif %}>
-            
+                                <!-- OPTION STYLING (reacts to peer-checked) -->
                                 <div class="border-2 border-gray-300 rounded-lg py-3 px-4 transition-all duration-300
                                             hover:bg-gradient-to-r from-blue-300 to-purple-300
-                                            peer-checked:bg-gradient-to-r peer-checked:from-blue-300 peer-checked:to-purple-300
+                                            peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-500
                                             peer-checked:border-blue-600 peer-checked:ring-2 peer-checked:ring-purple-400
-                                            peer-checked:font-bold peer-checked:text-white flex justify-between items-center">
-                                    
+                                            peer-checked:font-semibold peer-checked:text-white flex justify-between items-center">
+            
                                     <span>{{ option }}</span>
             
                                     <!-- Checkmark icon (only visible when selected) -->
@@ -50,6 +52,7 @@
                     {% endfor %}
                 </ul>
             </div>
+            
             
             
             
