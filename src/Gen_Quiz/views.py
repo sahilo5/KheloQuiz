@@ -6,54 +6,35 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 import re
+import google.generativeai as genai
 from datetime import date
 today = date.today()
 
 def fetch_quiz_data(topic, num_questions):
-    """Fetch quiz questions from the AI API"""
-    prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
+    """Fetch quiz questions from Google Gemini"""
+    genai.configure(api_key="AIzaSyAygj8I5_EpaFqww-jMHfK8bKc2Us9yoPM")  # Replace with actual key
 
-    response = requests.post(   
-        url="https://openrouter.ai/api/v1/chat/completions",
-        headers={
-        "Authorization": "Bearer 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",
-            "Content-Type": "application/json",
-        },
-        data=json.dumps({
-            "model": "deepseek/deepseek-r1-zero:free",
-            "messages": [{"role": "user", "content": prompt}]
-        }),
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    prompt = (
+        f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. "
+        "The format should be: {'questions': [{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}]}"
     )
-    
-    
-    response_json = response.json()
 
+    try:
+        response = model.generate_content(prompt)
+        raw_content = response.text.strip()
 
-    if "choices" in response_json and response_json["choices"]:
-        quiz_content = response_json["choices"][0].get("message", {}).get("content", "")
+        # Clean the content if it's wrapped in json ...  or similar
+        cleaned = re.sub(r"^(?:json)?|$", "", raw_content, flags=re.IGNORECASE).strip()
 
-        if quiz_content.startswith("\\boxed{"):
-            quiz_content = quiz_content[6:-1]  # Remove \boxed{ and trailing }
-# Remove markdown code block
-        quiz_content = re.sub(r"^```json\s*|```$", "", quiz_content.strip(), flags=re.MULTILINE)
+        print("✅ Gemini Response:")
+        print(cleaned)
 
-        # Fix double curly braces (common LLM mistake)
-        quiz_content = re.sub(r"^\s*{\s*{", "{", quiz_content)
-        quiz_content = re.sub(r"}\s*}\s*$", "}", quiz_content)
+        quiz_json = json.loads(cleaned)
+        return quiz_json
 
-        # Optional: remove extra whitespace or lines
-        quiz_content = quiz_content.strip()
-
-        print("✅ Cleaned content to parse:")
-        print(quiz_content)
-        try:
-            quiz_json = json.loads(quiz_content) 
-            return quiz_json # Convert string to JSON
-        except json.JSONDecodeError:
-            return {"error": "Failed to parse JSON from API response"}
-    else:
-        return {"error": "Invalid API response structure"}
-
+    except Exception as e:
+        return {"error": str(e)}
 @login_required
 def create_quiz(request):
     if request.method == "POST":
