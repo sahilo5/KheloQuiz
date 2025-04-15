@@ -5,17 +5,38 @@
 <head>
   <meta charset="UTF-8">
   <title>Quiz Complete</title>
+
+  <script>
+    // Push a dummy history entry
+    history.pushState(null, "", location.href);
+  
+    window.onpopstate = function () {
+      // User clicked back
+      location.href = "{% url 'dashboard' %}";
+    };
+  </script>
+  
   {% tailwind_css %}
 </head>
-<body class="bg-green-50 text-green-800 p-8 text-center">
-  <h1 class="text-3xl font-bold mb-4">🎉 Quiz Completed!</h1>
-  <p class="text-lg mb-2">Great job! You’ve finished all the questions.</p>
-  <p class="text-xl font-semibold">Your Score: {{ score }} / {{ total }}</p>
+<body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full text-center">
 
-  <div class="mt-6">
-    <a href="{% url 'home' %}" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg">
-      Back to Home
-    </a>
+    <h1 class="text-3xl font-bold mb-4">🎉 Quiz Completed!</h1>
+    <p class="text-lg mb-2">Great job! You’ve finished all the questions.</p>
+    <p class="text-xl font-semibold">Your Score: {{ score }} / {{ total }}</p>
+
+    <div class="mt-6">
+      <a href="{% url 'dashboard' %}" class="bg-grey-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg inline-block">
+        Back to Home
+      </a>
+    </div>
+    
+    <div class="mt-4">
+      <a href="{% url 'quiz_report' quiz_id=quiz_id %}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg inline-block">
+        View Analysis
+      </a>
+    </div>
+    
   </div>
 </body>
 </html>

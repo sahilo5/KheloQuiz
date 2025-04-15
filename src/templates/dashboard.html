@@ -2,65 +2,46 @@
 {% block content %}
 
     <!-- Dashboard Content -->
-    <div class="p-6 max-w-5xl mx-auto">
+    <div class="p-6 max-w-2xl mx-auto max-h-full">
         <section class="mb-6 text-center">
-            <h1 class="text-3xl font-bold text-gray-900">Welcome, {{ request.user.username }}!</h1>
-            <p class="text-gray-600 text-lg">You're now logged in to your dashboard.</p>
+            <h1 class="text-3xl font-bold text-gray-900">Generate Quiz</h1>
         </section>
 
-        <section class="mb-6">
-            <h2 class="text-xl font-bold mb-4">Generate Quiz</h2>
-            <div class="space-y-4">
-                <form method="post" class="space-y-4" action="{% url 'create_quiz' %}">
-                    {% csrf_token %}
-                <input type="text" name="topic" placeholder="Enter Quiz Topic" class="w-full md:w-2/3 p-4 border rounded-lg shadow-md">
-                <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-                    <select name="num_questions" class="p-4 border rounded-lg shadow-md bg-white text-gray-900 w-full sm:w-auto">
-                        <option disabled selected>Choose Number of Questions</option>
-                        <option value="3">3 Questions</option>
-                        <option value="5">5 Questions</option>
-                        <option value="10">10 Questions</option>
-                    </select>
-                    <button type="submit" class="w-48 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">Generate Quiz</button>
-        </form>
-        </div>
+        <section class="mb-10 px-4">
+            <div class="backdrop-blur-xl bg-white/30 border border-white/20 rounded-3xl shadow-2xl max-w-4xl mx-auto p-8">              
+              <form method="post" action="{% url 'create_quiz' %}" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Quiz Topic Input -->
+                <input
+                  type="text"
+                  name="topic"
+                  placeholder=" Search or Enter a Quiz Topic"
+                  class="w-full px-5 py-4 text-lg rounded-xl border border-gray-500 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+          
+                <!-- Select + Button -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                  <select
+                    name="num_questions"
+                    class="w-full sm:w-1/2 px-4 py-3 text-base border border-gray-500 rounded-xl shadow-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  >
+                    <option disabled selected>Choose Number of Questions</option>
+                    <option value="3">3 Questions</option>
+                    <option value="5">5 Questions</option>
+                    <option value="10">10 Questions</option>
+                  </select>
+          
+                  <button
+                    type="submit"
+                    class="w-full sm:w-1/2 ml-3 px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition duration-300"
+                  >
+                    Generate Quiz
+                  </button>
+                </div>
+              </form>
             </div>
-        </section>
-
-        <section class="mb-6">
-            <h2 class="text-xl font-bold mb-2">Your Recent Quizzes</h2>
-            <ul>
-                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
-                    <h3 class="font-semibold">Python Basics</h3>
-                    <p>Score: 85/100</p>
-                    <p>Status: Completed</p>
-                </li>
-                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
-                    <h3 class="font-semibold">Data Structures</h3>
-                    <p>Score: 72/100</p>
-                    <p>Status: Completed</p>
-                </li>
-                <li class="bg-white p-4 rounded-lg shadow-md mb-2 hover:scale-105 transform transition duration-200">
-                    <h3 class="font-semibold">AI Concepts</h3>
-                    <p>Score: 90/100</p>
-                    <p>Status: Completed</p>
-                </li>
-            </ul>
-        </section>
-
-        <!-- Progress Graph -->
-        <section class="mb-6">
-            <h2 class="text-xl font-bold mb-4">Quiz Progress</h2>
-            <div class="w-full bg-gray-200 rounded-full h-6">
-                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 85%">Python Basics - 85%</div>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
-                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 72%">Data Structures - 72%</div>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-6 mt-2">
-                <div class="bg-indigo-500 h-6 rounded-full text-xs text-center text-white leading-6" style="width: 90%">AI Concepts - 90%</div>
-            </div>
-        </section>
-    </div>
+          </section>
+              </div>
 
 {% endblock %}

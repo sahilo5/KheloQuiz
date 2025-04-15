@@ -1,0 +1,52 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Report</title>
+  {% tailwind_css %}
+</head>
+<body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
+    <div class="backdrop-blur-xl bg-white/30 rounded-xl shadow-lg p-8 max-w-4xl w-full">
+  <h1 class="text-3xl font-bold mb-6 text-center text-indigo-700">📋 Quiz Report: {{ quiz.name }}</h1>
+
+  <div class="space-y-6 max-w-4xl mx-auto">
+    {% for r in responses %}
+      <div class="bg-white rounded-lg shadow-md p-5 border-l-4 {% if r.is_correct %}border-green-500{% else %}border-red-500{% endif %}">
+        <h2 class="text-xl font-semibold mb-2 text-gray-800">Q{{ forloop.counter }}. {{ r.question.text }}</h2>
+        
+        <p class="mb-1"><span class="font-medium text-gray-600">Your Answer:</span> 
+          <span class="{% if r.is_correct %}text-green-600{% else %}text-red-600{% endif %}">{{ r.selected_answer }}</span>
+        </p>
+        
+        <p class="mb-1"><span class="font-medium text-gray-600">Correct Answer:</span> 
+          <span class="text-green-700">{{ r.question.correct_answer }}</span>
+        </p>
+
+        <p class="mb-1">
+          <span class="font-medium text-gray-600">Result:</span> 
+          {% if r.is_correct %}
+            ✅ <span class="text-green-600">Correct</span>
+          {% else %}
+            ❌ <span class="text-red-600">Incorrect</span>
+          {% endif %}
+        </p>
+
+        {% if r.question.explanation %}
+          <div class="mt-3 bg-blue-50 border border-blue-200 rounded p-3">
+            <span class="font-medium text-blue-700">Explanation:</span>
+            <p class="text-blue-800 mt-1">{{ r.question.explanation }}</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-10 text-center">
+    <a href="{% url 'home' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
+      ⬅ Back to Home
+    </a>
+  </div>
+  </div>
+</body>
+</html>

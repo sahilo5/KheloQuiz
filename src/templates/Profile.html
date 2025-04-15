@@ -64,7 +64,7 @@
       <!-- Quiz Analysis Section (Right) -->
       <div class="flex-1 bg-white  rounded-lg shadow-sm p-6">
         <h5 class="text-2xl font-bold text-gray-900 dark:black mb-4 text-center">Quiz Score Analysis</h5>
-        <div class="w-full h-64 bg-gray-100 dark:bg-gray-700 flex items-center justify-center p-4 rounded-lg mb-6 relative">
+        <div class="w-full h-64 bg-gray-100 dark:bg-gray-400 flex items-center justify-center p-4 rounded-lg mb-6 relative">
           <svg id="quizChart" viewBox="0 0 400 200" class="w-full h-full">
             <text x="5" y="180" font-size="12" fill="black">0</text>
             <text x="5" y="150" font-size="12" fill="black">20</text>
@@ -91,6 +91,17 @@
     </div>
   
     <script>
+  // profile
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("profileImage").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   
   <!-- User Info -->
       function toggleInfo(id) {
@@ -100,7 +111,7 @@
   
     // <!-- Quiz Analysis Section (Right) -->
   
-      const quizScores = [60, 80, 100, 70, 50, 85, 95];
+      const quizScores = [60, 80, 10, 70, 50, 85, 95];
       const svg = document.getElementById("quizChart");
   
       function drawGraph(scores) {
