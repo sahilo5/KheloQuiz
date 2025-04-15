@@ -18,7 +18,7 @@ def fetch_quiz_data(topic, num_questions):
     model = genai.GenerativeModel("gemini-1.5-flash")
     prompt = (
         f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. "
-        "The format should be: {'questions': [{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}]}"
+        "The format should be: {'questions': [{'question': '...', 'options': [3], 'answer': '...', 'explanation': '...'}]}"
     )
 
     try:
