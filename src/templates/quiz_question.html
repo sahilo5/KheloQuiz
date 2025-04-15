@@ -8,26 +8,53 @@
     {% tailwind_css %}
 </head>
 
-<body class="bg-gray-100 p-6 text-gray-800">
-    <div class="max-w-xl mx-auto bg-white p-6 rounded-xl shadow">
-        <h2 class="text-xl font-semibold mb-4">Question {{ index }} of {{ total }}</h2>
-        <p class="mb-4">{{ question.question }}</p>
+<body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full">
+  
+        <h2 class="text-purple-700 font-bold text-lg mt-8">Question {{ index }} of {{ total }}</h2>
+        <p class="text-2xl font-semibold text-gray-800 my-4">{{ question.question }}</p>
 
         <form method="POST">
             {% csrf_token %}
-            <ul class="space-y-2">
-                {% for option in question.options %}
-                    {% with option_str=option|stringformat:"s" selected_str=selected_answer|stringformat:"s" %}
-                    <li>
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="answer" value="{{ option }}"
-                                {% if option_str == selected_str %}checked{% endif %}>
-                            <span>{{ option }}</span>
-                        </label>
-                    </li>
-                    {% endwith %}
-                {% endfor %}
-            </ul>
+            <div class="space-y-4" id="optionsContainer">
+                <ul class="space-y-7">
+                    {% for option in question.options %}
+                        {% with option_str=option|stringformat:"s" selected_str=selected_answer|stringformat:"s" %}
+                        <li>
+                            <label class="block w-full cursor-pointer">
+                                <!-- HIDDEN RADIO BUTTON -->
+                                <input 
+                                    type="radio" 
+                                    name="answer" 
+                                    value="{{ option }}" 
+                                    class="peer hidden"
+                                    {% if option_str == selected_str %}checked{% endif %}
+                                >
+                                
+                                <!-- OPTION STYLING (reacts to peer-checked) -->
+                                <div class="border-2 border-gray-300 rounded-lg py-3 px-4 transition-all duration-300
+                                            hover:bg-gradient-to-r from-blue-300 to-purple-300
+                                            peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-500
+                                            peer-checked:border-blue-600 peer-checked:ring-2 peer-checked:ring-purple-400
+                                            peer-checked:font-semibold peer-checked:text-white flex justify-between items-center">
+            
+                                    <span>{{ option }}</span>
+            
+                                    <!-- Checkmark icon (only visible when selected) -->
+                                    <svg class="w-5 h-5 text-white hidden peer-checked:inline" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                            </label>
+                        </li>
+                        {% endwith %}
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            
+            
             
 
 
@@ -36,7 +63,7 @@
                 <!-- Previous Button -->
                 {% if not is_first %}
                 <button name="prev" type="submit"
-                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg">Previous</button>
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800  py-3 px-6 rounded-lg font-semibold w-32">Previous</button>
                 {% else %}
                 <span class="invisible px-4 py-2">Previous</span> <!-- keeps space -->
                 {% endif %}
@@ -44,10 +71,10 @@
                 <!-- Submit or Next Button -->
                 {% if is_last %}
                 <button name="submit" type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Submit</button>
+                    class="bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded-lg font-semibold w-32">Submit</button>
                 {% else %}
                 <button name="next" type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Next</button>
+                    class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold w-32">Next</button>
                 {% endif %}
             </div>
 

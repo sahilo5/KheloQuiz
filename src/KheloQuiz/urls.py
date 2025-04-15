@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from .views import home ,generate_quiz,about,setting,profile
-from Gen_Quiz.views import create_quiz, quiz_question
+from Gen_Quiz.views import create_quiz, quiz_question,quiz_report
 
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path('profile/', profile, name='profile'),
     path("quiz/", create_quiz, name="quiz"),
     path('quiz-question/', quiz_question, name='quiz_question'),
+    path('quiz/<int:quiz_id>/report/', quiz_report, name='quiz_report'),
 ]
