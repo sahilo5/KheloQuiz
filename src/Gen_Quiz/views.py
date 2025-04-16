@@ -6,53 +6,80 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 import re
+import google.generativeai as genai
 from datetime import date
+import google.generativeai as genai
 today = date.today()
 
 def fetch_quiz_data(topic, num_questions):
-    """Fetch quiz questions from the AI API"""
-    prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
+    """Fetch quiz questions from Google Gemini"""
+    genai.configure(api_key="AIzaSyAygj8I5_EpaFqww-jMHfK8bKc2Us9yoPM")  # Replace with actual key
 
-    response = requests.post(   
-        url="https://openrouter.ai/api/v1/chat/completions",
-        headers={
-        "Authorization": "Bearer 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",
-            "Content-Type": "application/json",
-        },
-        data=json.dumps({
-            "model": "deepseek/deepseek-r1-zero:free",
-            "messages": [{"role": "user", "content": prompt}]
-        }),
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    prompt = (
+        f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. "
+        "The format should be: {'questions': [{'question': '...', 'options': [3], 'answer': '...', 'explanation': '...'}]}"
     )
+
+    try:
+        response = model.generate_content(prompt)
+        raw_content = response.text.strip()
+
+        # Clean the content if it's wrapped in ```json ... ``` or similar
+        cleaned = re.sub(r"^```(?:json)?|```$", "", raw_content, flags=re.IGNORECASE).strip()
+
+        print("✅ Gemini Response:")
+        print(cleaned)
+
+        quiz_json = json.loads(cleaned)
+        return quiz_json
+
+    except Exception as e:
+        return {"error": str(e)}    
+# def fetch_quiz_data(topic, num_questions):
+#     """Fetch quiz questions from the AI API"""
+#     prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
+
+#     response = requests.post(   
+#         url="https://openrouter.ai/api/v1/chat/completions",
+#         headers={
+#         "Authorization": "Bearer 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",
+#             "Content-Type": "application/json",
+#         },
+#         data=json.dumps({
+#             "model": "deepseek/deepseek-r1-zero:free",
+#             "messages": [{"role": "user", "content": prompt}]
+#         }),
+#     )
     
     
-    response_json = response.json()
+#     response_json = response.json()
 
 
-    if "choices" in response_json and response_json["choices"]:
-        quiz_content = response_json["choices"][0].get("message", {}).get("content", "")
+#     if "choices" in response_json and response_json["choices"]:
+#         quiz_content = response_json["choices"][0].get("message", {}).get("content", "")
 
-        if quiz_content.startswith("\\boxed{"):
-            quiz_content = quiz_content[6:-1]  # Remove \boxed{ and trailing }
-# Remove markdown code block
-        quiz_content = re.sub(r"^```json\s*|```$", "", quiz_content.strip(), flags=re.MULTILINE)
+#         if quiz_content.startswith("\\boxed{"):
+#             quiz_content = quiz_content[6:-1]  # Remove \boxed{ and trailing }
+# # Remove markdown code block
+#         quiz_content = re.sub(r"^```json\s*|```$", "", quiz_content.strip(), flags=re.MULTILINE)
 
-        # Fix double curly braces (common LLM mistake)
-        quiz_content = re.sub(r"^\s*{\s*{", "{", quiz_content)
-        quiz_content = re.sub(r"}\s*}\s*$", "}", quiz_content)
+#         # Fix double curly braces (common LLM mistake)
+#         quiz_content = re.sub(r"^\s*{\s*{", "{", quiz_content)
+#         quiz_content = re.sub(r"}\s*}\s*$", "}", quiz_content)
 
-        # Optional: remove extra whitespace or lines
-        quiz_content = quiz_content.strip()
+#         # Optional: remove extra whitespace or lines
+#         quiz_content = quiz_content.strip()
 
-        print("✅ Cleaned content to parse:")
-        print(quiz_content)
-        try:
-            quiz_json = json.loads(quiz_content) 
-            return quiz_json # Convert string to JSON
-        except json.JSONDecodeError:
-            return {"error": "Failed to parse JSON from API response"}
-    else:
-        return {"error": "Invalid API response structure"}
+#         print("✅ Cleaned content to parse:")
+#         print(quiz_content)
+#         try:
+#             quiz_json = json.loads(quiz_content) 
+#             return quiz_json # Convert string to JSON
+#         except json.JSONDecodeError:
+#             return {"error": "Request Failed"}
+#     else:
+#         return {"error": "Service Down"}
 
 @login_required
 def create_quiz(request):
@@ -90,6 +117,9 @@ def create_quiz(request):
             request.session['quiz'] = questions
             request.session['current_q'] = 0
             request.session['quiz_id'] = quiz_obj.id  # store quiz ID for later tracking
+            
+            # ✅ Clear previous completion flag so new quiz works
+            request.session.pop('quiz_completed', None)
 
             return redirect('quiz_question')
         else:
@@ -105,6 +135,9 @@ def quiz_question(request):
     quiz = request.session.get('quiz', [])
     current_q = request.session.get('current_q', 0)
     selected_answers = request.session.get('selected_answers', {})
+
+    if request.session.get('quiz_completed'):
+        return redirect('dashboard')
 
     # Save answer from POST
     if request.method == "POST":
@@ -148,14 +181,23 @@ def quiz_question(request):
                         marks_obtained=marks
                     )
 
+
             # Save total score
             if quiz_obj:
                 quiz_obj.obtained_marks = score
                 quiz_obj.save()
 
+            request.session['quiz_completed'] = True  # 🧠 Used to prevent going back
+
+            # ✅ Clear session data
+            for key in ['quiz', 'current_q', 'selected_answers', 'quiz_id']:
+                request.session.pop(key, None)
+   
+            request.session['quiz_completed'] = True
             return render(request, "quiz_complete.html", {
                 "score": score,
                 "total": total,
+                "quiz_id": quiz_id,
             })
 
         request.session['current_q'] = current_q
@@ -170,41 +212,24 @@ def quiz_question(request):
         "is_last": current_q == len(quiz) - 1,
         "selected_answer": selected_answers.get(str(current_q), ""),
     })
+    
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Quiz, UserResponse
 
-    #         return JsonResponse({"error": "Failed to fetch quiz data"}, status=400)
-        
-    #     # Create a new Quiz instance
-    #     quiz = Quiz.objects.create(
-    #         user=request.user,
-    #         name=f"{topic} Quiz",
-    #         topic=topic,
-    #         total_questions=num_questions,
-    #         total_marks=num_questions  # Assuming 1 mark per question
-    #     )
-        
-        
-    #     # Store Questions
-    #     for question_data in quiz_data.get("questions", []):
-    #         # Ensure options is stored as a JSON object
-    #         options = question_data.get("options", [])
-           
-    #         if not isinstance(options, list):
-    #             options = []
-    #         print(options)
-    #         # Create Question
-    #         Question.objects.create(
-    #             quiz_id=quiz.id,
-    #             text=question_data["question"],
-    #             question_type="MCQ",  # Assuming all questions are MCQ
-    #             options=options,  # JSONField must store a valid list
-    #             correct_answer=question_data["answer"],
-    #             explanation=question_data.get("explanation", "")
-    #         )
-        
-    #     return JsonResponse({"message": "Quiz created successfully", "quiz_id": quiz.id})
-    
-    # return JsonResponse({"error": "Invalid request method"}, status=405)
-    
-    
-        
->>>>>>>>> Temporary merge branch 2
+@login_required
+def quiz_report(request, quiz_id):
+    # Securely fetch the quiz and ensure it belongs to the logged-in user
+    quiz = get_object_or_404(Quiz, id=quiz_id, user=request.user)
+
+    # Fetch all user responses for this quiz
+    responses = UserResponse.objects.filter(quiz=quiz, user=request.user).select_related('question')
+
+    # Optional: Ensure old session quiz data is cleared after report is generated
+    for key in ['quiz', 'current_q', 'selected_answers', 'quiz_id', 'quiz_completed']:
+        request.session.pop(key, None)
+
+    return render(request, "quiz_report.html", {
+        "quiz": quiz,
+        "responses": responses
+    })
