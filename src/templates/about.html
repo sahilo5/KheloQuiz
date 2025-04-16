@@ -44,42 +44,49 @@
             </div>
             <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white">
                 <h3 class="text-xl font-bold">Performance Analytics</h3>
-                <p class="mt-2 opacity-90">Track your progress and identify strengths & weaknesses.</p>
+                <p class="mt-2 opacity-90">Track your progress and improve with detailed insights.</p>
             </div>
-            <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-yellow-500 to-red-500 text-white">
-                <h3 class="text-xl font-bold">Multi-Category Quizzes</h3>
-                <p class="mt-2 opacity-90">Choose from a variety of topics across different subjects.</p>
+            <div class="p-6 shadow-lg rounded-xl bg-gradient-to-r from-green-500 to-teal-500 text-white">
+                <h3 class="text-xl font-bold">Gamified Learning</h3>
+                <p class="mt-2 opacity-90">Learn with fun, earn rewards, and challenge your friends.</p>
             </div>
         </div>
     </section>
 
     <!-- Meet Our Team -->
-    <section class="py-16 px-6 max-w-6xl mx-auto text-center">
-        <h2 class="text-3xl font-bold text-gray-800">Meet Our Team</h2>
-        <div class="grid md:grid-cols-3 gap-8 mt-6">
-            <div class="p-4 bg-white shadow-lg rounded-lg">
-                <img src="{% static 'images/user1.jpg' %}" alt="User 1" class="w-32 h-32 rounded-full mx-auto">
-                <h3 class="mt-4 text-xl font-bold">Roshan Dalvi</h3>
-                <p class="text-gray-600">Developer</p>
-            </div>
-            <div class="p-4 bg-white shadow-lg rounded-lg">
-                <img src="{% static 'images/user2.jpg' %}" alt="User 2" class="w-32 h-32 rounded-full mx-auto">
-                <h3 class="mt-4 text-xl font-bold">Jane Smith</h3>
-                <p class="text-gray-600">Lead Developer</p>
-            </div>
-            <div class="p-4 bg-white shadow-lg rounded-lg">
-                <img src="{% static 'images/user3.jpg' %}" alt="User 3" class="w-32 h-32 rounded-full mx-auto">
-                <h3 class="mt-4 text-xl font-bold">Emily Davis</h3>
-                <p class="text-gray-600">UI/UX Designer</p>
+    <section class="py-16 bg-gray-100 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-10">Meet Our Team</h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- User 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <img src="{% static 'images/user1.jpg' %}" alt="User 1" class="w-24 h-24 mx-auto rounded-full">
+                    <h3 class="mt-4 text-xl font-semibold">User 1</h3>
+                    <p class="text-gray-600">Founder & CEO</p>
+                </div>
+
+                <!-- User 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <img src="{% static 'images/user2.jpg' %}" alt="User 2" class="w-24 h-24 mx-auto rounded-full">
+                    <h3 class="mt-4 text-xl font-semibold">User 2</h3>
+                    <p class="text-gray-600">AI Specialist</p>
+                </div>
+
+                <!-- User 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <img src="{% static 'images/user3.jpg' %}" alt="User 3" class="w-24 h-24 mx-auto rounded-full">
+                    <h3 class="mt-4 text-xl font-semibold">User 3</h3>
+                    <p class="text-gray-600">UI/UX Designer</p>
+                </div>
+
+                <!-- User 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <img src="{% static 'images/user4.jpg' %}" alt="User 4" class="w-24 h-24 mx-auto rounded-full">
+                    <h3 class="mt-4 text-xl font-semibold">User 4</h3>
+                    <p class="text-gray-600">Backend Developer</p>
+                </div>
             </div>
         </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="py-16 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center px-6">
-        <h2 class="text-3xl font-bold">Join KheloQuiz Today!</h2>
-        <p class="mt-4 text-lg opacity-90">Start testing your knowledge with AI-generated quizzes.</p>
-        <a href="{% url 'register' %}" class="mt-6 inline-block bg-white text-blue-600 px-6 py-3 rounded-lg text-lg font-bold shadow-md hover:bg-gray-100">Get Started</a>
     </section>
 </body>
 {% endblock %}
