@@ -1,47 +1,142 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
 
-    <!-- Dashboard Content -->
-    <div class="p-6 max-w-2xl mx-auto max-h-full">
-        <section class="mb-6 text-center">
-            <h1 class="text-3xl font-bold text-gray-900">Generate Quiz</h1>
-        </section>
+<div class="p-6 max-w-4xl mx-auto">
+    <!-- Heading -->
+    <section class="mb-8 text-center">
+        <h1 class="text-4xl font-bold text-gray-900 drop-shadow-sm"> Generate Your AI Quiz</h1>
+        <p class="text-gray-600 mt-2">Type a topic, select question count.</p>
+    </section>
 
-        <section class="mb-10 px-4">
-            <div class="backdrop-blur-xl bg-white/30 border border-white/20 rounded-3xl shadow-2xl max-w-4xl mx-auto p-8">              
-              <form method="post" action="{% url 'create_quiz' %}" class="space-y-6">
+    <!-- Form Section -->
+    <section class="px-4">
+        <div class="backdrop-blur-xl bg-white/30 border border-white/20 rounded-3xl shadow-2xl p-10">
+            <form method="post" action="{% url 'create_quiz' %}" class="space-y-6">
                 {% csrf_token %}
-                
-                <!-- Quiz Topic Input -->
+
+                <!-- Topic Input -->
                 <input
-                  type="text"
-                  name="topic"
-                  placeholder=" Search or Enter a Quiz Topic"
-                  class="w-full px-5 py-4 text-lg rounded-xl border border-gray-500 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    type="text"
+                    name="topic"
+                    placeholder="🔍 Search or Enter a Quiz Topic (e.g., Python, Space, History)"
+                    class="w-full px-5 py-4 text-lg rounded-xl border border-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    required
                 />
-          
-                <!-- Select + Button -->
+
+                <!-- Selection + Submit -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                  <select
-                    name="num_questions"
-                    class="w-full sm:w-1/2 px-4 py-3 text-base border border-gray-500 rounded-xl shadow-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    <option disabled selected>Choose Number of Questions</option>
-                    <option value="3">3 Questions</option>
-                    <option value="5">5 Questions</option>
-                    <option value="10">10 Questions</option>
-                  </select>
-          
-                  <button
-                    type="submit"
-                    class="w-full sm:w-1/2 ml-3 px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg font-semibold hover:from-blue-600 hover:to-purple-600 transition duration-300"
-                  >
-                    Generate Quiz
-                  </button>
+                    <select
+                        name="num_questions"
+                        class="w-full sm:w-1/2 px-4 py-3 text-base border border-gray-400 rounded-xl shadow-sm bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
+                    >
+                        <option disabled selected>🧮 Choose Number of Questions</option>
+                        <option value="3">3 Questions</option>
+                        <option value="5">5 Questions</option>
+                        <option value="10">10 Questions</option>
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="w-full sm:w-1/2 ml-0 sm:ml-4 px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl shadow-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300"
+                    >
+                        🎯 Generate Quiz
+                    </button>
                 </div>
-              </form>
-            </div>
-          </section>
+            </form>
+        </div>
+    </section>
+
+<!-- Recent Quizzes Section -->
+<section class="mt-10 px-4">
+  <div class="bg-white/40 backdrop-blur-md rounded-2xl shadow-xl p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🧾 Recently Generated Quizzes</h2>
+
+    {% if recent_quizzes %}
+      <div class="hidden md:block overflow-x-auto">
+        <!-- Desktop Table -->
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800">
+              <th class="px-4 py-3 text-sm font-semibold">📚 Quiz Name</th>
+              <th class="px-4 py-3 text-sm font-semibold">🕒 Date</th>
+              <th class="px-4 py-3 text-sm font-semibold">📈 Score</th>
+              <th class="px-4 py-3 text-sm font-semibold">🔍 Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-300">
+            {% for quiz in recent_quizzes %}
+              <tr class="hover:bg-white/70 transition">
+                <td class="px-4 py-3 font-medium text-blue-700 hover:underline">
+                  <a href="{% url 'quiz_report' quiz.id %}">{{ quiz.name }}</a>
+                </td>
+                <td class="px-4 py-3 text-gray-600 text-sm">
+                  {{ quiz.created_at|date:"M d, Y - H:i" }}
+                </td>
+                <td class="px-4 py-3 font-semibold">
+                  {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
+                    {% if percent|floatformat >= 80 %}
+                      <span class="text-green-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% elif percent|floatformat >= 50 %}
+                      <span class="text-yellow-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% else %}
+                      <span class="text-red-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% endif %}
+                  {% endwith %}
+                </td>
+                <td class="px-4 py-3">
+                  <a href="{% url 'quiz_report' quiz.id %}" 
+                     class="inline-block px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition text-sm">
+                    View Report
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card Layout -->
+      <div class="md:hidden space-y-4">
+        {% for quiz in recent_quizzes %}
+          <div class="bg-white/80 p-4 rounded-xl shadow-md">
+            <div class="flex flex-col space-y-1">
+              <a href="{% url 'quiz_report' quiz.id %}" class="text-lg font-semibold text-blue-700 hover:underline">
+                {{ quiz.name }}
+              </a>
+              <p class="text-sm text-gray-600">
+                {{ quiz.created_at|date:"M d, Y - H:i" }}
+              </p>
+              <p class="text-base font-medium">
+                {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
+                  {% if percent|floatformat >= 80 %}
+                    <span class="text-green-600">📈 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% elif percent|floatformat >= 50 %}
+                    <span class="text-yellow-600">📉 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% else %}
+                    <span class="text-red-600">⚠️ {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% endif %}
+                {% endwith %}
+              </p>
+              <div class="mt-2">
+                <a href="{% url 'quiz_report' quiz.id %}" 
+                   class="inline-block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm transition">
+                  📄 View Report
+                </a>
               </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-600 italic text-center mt-4">
+        No quizzes generated yet. Start with a new quiz above! 🎯
+      </p>
+    {% endif %}
+  </div>
+</section>
+
+
+</div>
 
 {% endblock %}

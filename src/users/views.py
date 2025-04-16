@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.contrib.auth import login, logout
 from .forms import CustomUserCreationForm 
 from .middlewares import auth, guest
+from Gen_Quiz.models import Quiz
 # Create your views here.
 
 @guest
@@ -32,7 +33,8 @@ def login_view(request):
 
 @auth
 def dashboard_view(request):
-    return render(request, 'dashboard.html')
+    recent_quizzes = Quiz.objects.filter(user=request.user).order_by('-created_at')[:5]
+    return render(request, 'dashboard.html', {'recent_quizzes': recent_quizzes})
 
 def logout_view(request):
     logout(request)
