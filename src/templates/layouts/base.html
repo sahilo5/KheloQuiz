@@ -29,7 +29,9 @@
     </nav>
     <!-- Page Content -->
     <div class="p-6 max-w-5xl mx-auto">
-        {% block content %} {% endblock %}
+        {% block content %}{% block scripts %}
+        {% endblock %}
+         {% endblock %}
     </div>
 </body>
 </html>
