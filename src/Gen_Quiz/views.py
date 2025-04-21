@@ -6,8 +6,7 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 import re
-from django.db.models import Q
-import google.generativeai as genai
+import google.generativeai as genaiimport
 from datetime import date
 import google.generativeai as genai
 today = date.today()
