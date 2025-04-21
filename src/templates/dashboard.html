@@ -71,7 +71,7 @@
                   <a href="{% url 'quiz_report' quiz.id %}">{{ quiz.name }}</a>
                 </td>
                 <td class="px-4 py-3 text-gray-600 text-sm">
-                  {{ quiz.created_at|date:"M d, Y - H:i" }}
+                  {{ quiz.created_at|date:"M d, Y" }}
                 </td>
                 <td class="px-4 py-3 font-semibold">
                   {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
