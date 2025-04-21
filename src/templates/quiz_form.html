@@ -4,43 +4,44 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>{{ topic }} Quiz</title>
-    {% tailwind_css %}  
+  <meta charset="UTF-8">
+  <title>{{ topic }} Quiz</title>
+  {% tailwind_css %}
 </head>
 
 <body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
   <div class="bg-white rounded-xl shadow-lg p-8 max-w-lg w-full">
-  
-      {% if error %}
-      <div class="bg-red-50 border border-red-200 text-red-800 p-6 rounded-xl shadow-md text-center space-y-4">
-        <h2 class="text-2xl font-semibold">😔 Oops! Something went wrong</h2>
-        <p class="text-md">{{ error }}</p>
-        <p class="text-sm text-gray-600">We're sorry, but we couldn't load your quiz. This might be due to a temporary issue with network.</p>
-        
-        <button onclick="location.reload()"
-                class="bg-gradient-to-r from-pink-500 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow transition duration-300">
-           Retry
-        </button>
-      </div>
-    {% else %}
-    
-        {% for q in quiz %}
-          <div class="bg-white p-6 rounded-xl shadow mb-6">
-            <h2 class="text-xl font-semibold mb-2">{{ forloop.counter }}. {{ q.question }}</h2>
-            
-            <ul class="list-disc ml-6 mb-4 space-y-1">
-              {% for option in q.options %}
-                <li>{{ option }}</li>
-              {% endfor %}
-            </ul>
-  
-            <p class="text-green-700 font-medium mb-1">✅ Correct Answer: {{ q.answer }}</p>
-            <p class="text-gray-600 italic">💡 Explanation: {{ q.explanation }}</p>
-          </div>
-        {% endfor %}
-      {% endif %}
+
+    {% if error %}
+    <div class="bg-red-50 border border-red-200 text-red-800 p-6 rounded-xl shadow-md text-center space-y-4">
+      <h2 class="text-2xl font-semibold">😔 Oops! Something went wrong</h2>
+      <p class="text-md">{{ error }}</p>
+      <p class="text-sm text-gray-600">We're sorry, but we couldn't load your quiz. This might be due to a temporary
+        issue with network.</p>
+
+      <button onclick="location.reload()"
+        class="bg-gradient-to-r from-pink-500 to-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow transition duration-300">
+        Retry
+      </button>
     </div>
-  </body>
+    {% else %}
+
+    {% for q in quiz %}
+    <div class="bg-white p-6 rounded-xl shadow mb-6">
+      <h2 class="text-xl font-semibold mb-2">{{ forloop.counter }}. {{ q.question }}</h2>
+
+      <ul class="list-disc ml-6 mb-4 space-y-1">
+        {% for option in q.options %}
+        <li>{{ option }}</li>
+        {% endfor %}
+      </ul>
+
+      <p class="text-green-700 font-medium mb-1">✅ Correct Answer: {{ q.answer }}</p>
+      <p class="text-gray-600 italic">💡 Explanation: {{ q.explanation }}</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</body>
 
 </html>

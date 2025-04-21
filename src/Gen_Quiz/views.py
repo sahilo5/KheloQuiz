@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 import requests
 import json
 import re
+from django.db.models import Q
 import google.generativeai as genai
 from datetime import date
 import google.generativeai as genai
@@ -232,4 +233,38 @@ def quiz_report(request, quiz_id):
     return render(request, "quiz_report.html", {
         "quiz": quiz,
         "responses": responses
+    })
+
+@login_required
+def quiz_analysis_view(request):
+    user = request.user
+    quizzes = Quiz.objects.filter(user=user)
+
+    quiz_scores = [quiz.obtained_marks for quiz in quizzes]
+    quiz_totals = [quiz.total_marks for quiz in quizzes]
+
+    total_obtained = sum(quiz_scores)
+    total_possible = sum(quiz_totals)
+
+    average_score = round((total_obtained / total_possible) * 100, 2) if total_possible > 0 else 0
+
+    # ✅ Pie Chart Data (Correct, Incorrect, Unanswered)
+    responses = UserResponse.objects.filter(user=user)
+
+    correct = responses.filter(is_correct=True).count()
+    incorrect = responses.filter(is_correct=False).exclude(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+
+    chart_data = {
+        'Correct': correct,
+        'Incorrect': incorrect,
+        'Unanswered': unanswered,
+    }
+
+    return render(request, 'Profile.html', {
+        "user": request.user,
+        'quiz_scores': quiz_scores,
+        'total_quizzes': quizzes.count(),
+        'average_score': average_score,
+        'chart_data': chart_data,
     })
