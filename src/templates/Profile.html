@@ -1,141 +1,210 @@
-{% extends 'layouts/base.html' %}
-{% load static %}
-
-{% block content %}
-<body class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4">
-
-
-    <div class="flex flex-col lg:flex-row gap-8 w-full max-w-7xl">
-  
-      <!-- Profile Card Section (Left) -->
-      <div class="w-full lg:w-80 bg-white rounded-[60px] relative overflow-hidden shadow-md">
-        <!-- Half-moon Top Curve -->
-        <div class="absolute -top-20 left-1/2 transform -translate-x-1/2 w-[200%] h-40 bg-gradient-to-br from-blue-700 to-purple-00 rounded-b-full z-0"></div>
+{% extends 'layouts/base.html' %} {% load static %} {% block content %}
+<body
+  class="bg-gradient-to-br from-blue-300 to-purple-400 flex items-center justify-center min-h-screen p-4"
+>
+  <div class="flex flex-col lg:flex-row gap-8 w-full max-w-7xl">
+    <!-- Profile Card Section (Left) -->
+    <div
+      class="w-full lg:w-80 bg-white rounded-[60px] relative overflow-hidden shadow-md"
+    >
+      <!-- Half-moon Top Curve -->
+      <div
+        class="absolute -top-20 left-1/2 transform -translate-x-1/2 w-[200%] h-40 bg-gradient-to-br from-blue-700 to-purple-00 rounded-b-full z-0"
+      ></div>
       <!-- Image Section -->
-  <div class="relative w-full flex justify-center items-center">
-    <!-- Gradient Background Circle -->
-    <div class="absolute w-40 h-40 bg-gradient-to-br from-pink-500 to-purple-700 rounded-full z-0"></div>
-    
-    <!-- Profile Image and UserID -->
-    <div class="flex flex-col items-center z-10">
-      <img src="https://cdn.pixabay.com/photo/2023/07/31/06/57/ai-generated-8159794_1280.jpg" alt="Profile" class="w-32 h-32 rounded-full relative" />
-      <div class="text-white font-bold text-sm text-center mt-1 bg-purple-700 px-4 py-1 rounded-full -mt-3">Userid</div>
-    </div>
-  </div>
-  
-  
-        <!-- User Info -->
-        <div class="w-full mt-12 px-8 space-y-6">
-          <!-- Name Section -->
-          <div onclick="toggleInfo('nameInfo')" class="cursor-pointer">
-            <p class="font-bold text-lg">Name</p>
-            <hr class="border-t border-black mt-1">
-            <p id="nameInfo" class="mt-2 hidden text-gray-700">Soham Anil Shende</p>
-          </div>
-        
-          <!-- Mail ID Section -->
-          <div onclick="toggleInfo('mailInfo')" class="cursor-pointer">
-            <p class="font-bold text-lg">Mail Id</p>
-            <hr class="border-t border-black mt-1">
-            <p id="mailInfo" class="mt-2 hidden text-gray-700">soham@example.com</p>
-          </div>
-        
-          <!-- Password Section -->
-          <div onclick="toggleInfo('passInfo')" class="cursor-pointer">
-            <p class="font-bold text-lg">Password</p>
-            <hr class="border-t border-black mt-1">
-            <p id="passInfo" class="mt-2 hidden text-gray-700">********</p>
-          </div>
-        </div>
-  
-        <!-- Logout Button -->
-        <!-- Logout Button Centered -->
-  <div class="w-full flex justify-center">
-    <a href="{% url 'logout' %}">
-    <button class="absolute bottom-4 px-6 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white font-semibold rounded-full text-sm hover:scale-105 transition-transform duration-200">
-      Log out
-    </button>
-  </a>
-    
-  </div>
-  
-      </div>
-  
-      <!-- Quiz Analysis Section (Right) -->
-      <div class="flex-1 bg-white  rounded-lg shadow-sm p-6">
-        <h5 class="text-2xl font-bold text-gray-900 dark:black mb-4 text-center">Quiz Score Analysis</h5>
-        <div class="w-full h-64 bg-gray-100 dark:bg-gray-400 flex items-center justify-center p-4 rounded-lg mb-6 relative">
-          <svg id="quizChart" viewBox="0 0 400 200" class="w-full h-full">
-            <text x="5" y="180" font-size="12" fill="black">0</text>
-            <text x="5" y="150" font-size="12" fill="black">20</text>
-            <text x="5" y="120" font-size="12" fill="black">40</text>
-            <text x="5" y="90" font-size="12" fill="black">60</text>
-            <text x="5" y="60" font-size="12" fill="black">80</text>
-            <text x="5" y="30" font-size="12" fill="black">100</text>
-            <line x1="30" y1="10" x2="30" y2="180" stroke="black" stroke-width="2"></line>
-            <line x1="30" y1="180" x2="380" y2="180" stroke="black" stroke-width="2"></line>
-          </svg>
-        </div>
-        <div class="mt-6 flex justify-between items-center text-center px-6">
-          <div class="flex-1">
-            <h5 class="text-xl font-semibold text-gray-900 dark:text-black">Total Quizzes</h5>
-            <p id="totalQuizzes" class="text-2xl font-bold text-blue-600 dark:text-blue-700 mt-1">0</p>
-          </div>
-          <div class="w-px h-12 bg-gray-400"></div>
-          <div class="flex-1">
-            <h5 class="text-xl font-semibold text-gray-900 dark:text-black">Average Score</h5>
-            <p id="averageScore" class="text-2xl font-bold text-green-600 dark:text-green-700 mt-1">0%</p>
+      <div class="relative w-full flex justify-center items-center">
+        <!-- Gradient Background Circle -->
+        <div
+          class="absolute w-40 h-40 bg-gradient-to-br from-pink-500 to-purple-700 rounded-full z-0"
+        ></div>
+
+        <!-- Profile Image and UserID -->
+        <div class="flex flex-col items-center z-10">
+          <img
+            src="https://cdn.pixabay.com/photo/2023/07/31/06/57/ai-generated-8159794_1280.jpg"
+            alt="Profile"
+            class="w-32 h-32 rounded-full relative"
+          />
+          <div
+            class="text-white font-bold text-sm text-center mt-1 bg-purple-700 px-4 py-1 rounded-full -mt-3"
+          >
+            {{ request.user.username }}
           </div>
         </div>
       </div>
+
+      <!-- User Info -->
+      <div class="w-full mt-12 px-8 space-y-6">
+        <!-- Name Section -->
+        <div>
+          <p class="font-bold text-lg">Name</p>
+          <hr class="border-t border-black mt-1" />
+          <p class="mt-2 text-gray-700">
+            {{ request.user.first_name }} {{ request.user.last_name }}
+          </p>
+        </div>
+
+        <!-- Email Section -->
+        <div>
+          <p class="font-bold text-lg">Mail ID</p>
+          <hr class="border-t border-black mt-1" />
+          <p class="mt-2 text-gray-700">{{ request.user.email }}</p>
+        </div>
+
+        <!-- Password Section -->
+        <div>
+          <p class="font-bold text-lg">Password</p>
+          <hr class="border-t border-black mt-1" />
+          <p class="mt-2 text-gray-700">********</p>
+        </div>
+      </div>
+
+      <!-- Logout Button (Responsive + Proper Placement) -->
+      <div class="w-full mt-8 mb-6 flex justify-center">
+        <a href="{% url 'logout' %}">
+          <button
+            class="px-6 py-2 bg-gradient-to-r from-pink-500 to-blue-600 text-white font-semibold rounded-full text-sm hover:scale-105 transition-transform duration-200"
+          >
+            Log out
+          </button>
+        </a>
+      </div>
     </div>
+
+    <!-- Quiz Analysis Section (Right) -->
+    <div class="flex-1 bg-white rounded-lg shadow-sm p-6">
+      <h5 class="text-2xl font-bold text-gray-900 dark:black mb-4 text-center">
+        Quiz Score Analysis
+      </h5>
+      <div
+        class="w-full h-64 bg-gray-100 dark:bg-gray-400 flex items-center justify-center p-4 rounded-lg mb-6 relative"
+      >
+        <svg id="quizChart" viewBox="0 0 400 200" class="w-full h-full">
+          <text x="5" y="180" font-size="12" fill="black">0</text>
+          <text x="5" y="150" font-size="12" fill="black">20</text>
+          <text x="5" y="120" font-size="12" fill="black">40</text>
+          <text x="5" y="90" font-size="12" fill="black">60</text>
+          <text x="5" y="60" font-size="12" fill="black">80</text>
+          <text x="5" y="30" font-size="12" fill="black">100</text>
+          <line
+            x1="30"
+            y1="10"
+            x2="30"
+            y2="180"
+            stroke="black"
+            stroke-width="2"
+          ></line>
+          <line
+            x1="30"
+            y1="180"
+            x2="380"
+            y2="180"
+            stroke="black"
+            stroke-width="2"
+          ></line>
+        </svg>
+      </div>
+      <div class="mt-6 flex justify-between items-center text-center px-6">
+        <div class="flex-1">
+          <h5 class="text-xl font-semibold text-gray-900 dark:text-black">
+            Total Quizzes
+          </h5>
+          <p class="text-2xl font-bold text-blue-600 dark:text-blue-700 mt-1">
+            {{ total_quizzes }}
+          </p>
+        </div>
+        <div class="w-px h-12 bg-gray-400"></div>
+        <div class="flex-1">
+          <h5 class="text-xl font-semibold text-gray-900 dark:text-black">
+            Average Score
+          </h5>
+          <p class="text-2xl font-bold text-green-600 dark:text-green-700 mt-1">
+            {{ average_score }}%
+          </p>
+        </div>
+      </div>
+      </div>
+
+  </div>
+
+  <!-- Recent Quizzes Section -->
+  <section class="mt-10 px-4">
+    <div class="bg-white/40 backdrop-blur-md rounded-2xl shadow-xl p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">🧾 Your Recent Quizzes</h2>
   
-    <script>
-  // profile
-    function handleImageUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          document.getElementById("profileImage").src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+      {% if recent_quizzes %}
+        <div class="space-y-4">
+          {% for quiz in recent_quizzes %}
+            <div class="quiz-card bg-white/80 p-4 rounded-xl shadow-md">
+              <div class="flex flex-col space-y-1">
+                <a href="{% url 'quiz_report' quiz.id %}" class="text-lg font-semibold text-blue-700 hover:underline">
+                  {{ quiz.name }}
+                </a>
+                <p class="text-sm text-gray-600">
+                  {{ quiz.created_at|date:"M d, Y" }}
+                </p>
+                <p class="text-base font-medium">
+                  {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
+                    {% if percent|floatformat >= 80 %}
+                      <span class="text-green-600">📈 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% elif percent|floatformat >= 50 %}
+                      <span class="text-yellow-600">📉 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% else %}
+                      <span class="text-red-600">⚠️ {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% endif %}
+                  {% endwith %}
+                </p>
+                <div class="mt-2">
+                  <a href="{% url 'quiz_report' quiz.id %}" 
+                     class="inline-block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm transition">
+                    📄 View Report
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-gray-600 italic text-center mt-4">No quizzes generated yet. 🎯</p>
+      {% endif %}
+    </div>
+  </section>
   
-  <!-- User Info -->
-      function toggleInfo(id) {
-      const element = document.getElementById(id);
-      element.classList.toggle('hidden');
-    }
   
+
+  <script>
     // <!-- Quiz Analysis Section (Right) -->
-  
-      const quizScores = [60, 80, 10, 70, 50, 85, 95];
-      const svg = document.getElementById("quizChart");
-  
-      function drawGraph(scores) {
-        let points = "";
-        let labels = "";
-        let startX = 30;
-        let stepX = 50;
-        let maxY = 100;
-        let scaleY = 150 / maxY;
-  
-        scores.forEach((score, index) => {
-          let x = startX + index * stepX;
-          let y = 180 - score * scaleY;
-          points += `${x},${y} `;
-          labels += `<text x='${x - 10}' y='195' font-size='12' fill='black'>Quiz ${index + 1}</text>`;
-          labels += `<circle cx='${x}' cy='${y}' r='4' fill='blue' />`;
-        });
-  
-        svg.innerHTML += `<polyline points='${points}' fill='none' stroke='blue' stroke-width='3' />` + labels;
-        document.getElementById("totalQuizzes").innerText = scores.length;
-        document.getElementById("averageScore").innerText = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2) + "%";
-      }
-  
-      drawGraph(quizScores);
-    </script>
-  </body>
+
+    const quizScores = [60, 80, 10, 70, 50, 85, 95];
+    const svg = document.getElementById("quizChart");
+
+    function drawGraph(scores) {
+      let points = "";
+      let labels = "";
+      let startX = 30;
+      let stepX = 50;
+      let maxY = 100;
+      let scaleY = 150 / maxY;
+
+      scores.forEach((score, index) => {
+        let x = startX + index * stepX;
+        let y = 180 - score * scaleY;
+        points += `${x},${y} `;
+        labels += `<text x='${
+          x - 10
+        }' y='195' font-size='12' fill='black'>Quiz ${index + 1}</text>`;
+        labels += `<circle cx='${x}' cy='${y}' r='4' fill='blue' />`;
+      });
+
+      svg.innerHTML +=
+        `<polyline points='${points}' fill='none' stroke='blue' stroke-width='3' />` +
+        labels;
+      document.getElementById("totalQuizzes").innerText = scores.length;
+      document.getElementById("averageScore").innerText =
+        (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2) + "%";
+    }
+
+    drawGraph(quizScores);
+  </script>
+</body>
 {% endblock %}
