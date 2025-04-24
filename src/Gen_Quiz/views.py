@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import requests
 import json
+from django.db.models import Q
 import re
 import google.generativeai as genaiimport
 from datetime import date
