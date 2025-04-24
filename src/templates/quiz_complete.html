@@ -24,6 +24,30 @@
     <h1 class="text-3xl font-bold mb-4">🎉 Quiz Completed!</h1>
     <p class="text-lg mb-2">Great job! You’ve finished all the questions.</p>
     <p class="text-xl font-semibold">Your Score: {{ score }} / {{ total }}</p>
+<!-- Circular Progress with Centered Percentage -->
+<div class="relative w-36 h-36 mx-auto mt-6 display-flex flex-col">
+  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+    <!-- Background Circle -->
+    <circle cx="50" cy="50" r="25" stroke="#e5e7eb" stroke-width="8" fill="none" />
+    
+    <!-- Foreground Animated Circle -->
+    <circle id="progressCircle"
+            cx="50" cy="50"
+            r="25"
+            stroke="#22c55e"
+            stroke-width="8"
+            fill="none"
+            stroke-dasharray="282.6"
+            stroke-dashoffset="282.6"
+            stroke-linecap="round" />
+  </svg>
+
+  <!-- Percentage Text Centered Inside -->
+  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <span id="percentageText" class="text-2xl font-bold text-green-600">0%</span>
+  </div>
+</div>
+
 
     <div class="mt-6">
       <a href="{% url 'dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg inline-block">
@@ -38,5 +62,51 @@
     </div>
     
   </div>
+
+  <script>
+    const score = {{ score }};
+    const total = {{ total }};
+    const percent = Math.round((score / total) * 100);
+  
+    const circle = document.getElementById("progressCircle");
+    const text = document.getElementById("percentageText");
+  
+    const radius = 25;
+    const circumference = 2 * Math.PI * radius;
+  
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference;
+  
+    // Determine color based on score
+    let strokeColor = "#22c55e";  // default green
+    let textColor = "text-green-600";
+  
+    if (percent < 50) {
+      strokeColor = "#ef4444"; // red
+      textColor = "text-red-600";
+    } else if (percent < 70) {
+      strokeColor = "#facc15"; // yellow
+      textColor = "text-yellow-500";
+    }
+  
+    circle.setAttribute("stroke", strokeColor);
+    text.className = `text-xl font-bold ${textColor}`;
+  
+    let current = 0;
+  
+    function animateProgress() {
+      const offset = circumference - (current / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+      text.textContent = current + "%";
+  
+      if (current < percent) {
+        current++;
+        requestAnimationFrame(animateProgress);
+      }
+    }
+  
+    animateProgress();
+  </script>
+  
 </body>
 </html>

@@ -2,10 +2,16 @@ from django.shortcuts import render, redirect
 from .models import Quiz, Question, UserResponse
 from datetime import datetime
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-import requests
-import json
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+import requests 
+import json
+from django.db.models import Avg
+
+
+# from django.contrib.auth.decorators import login_required
+# from django.http import JsonResponse
+# from .models import Quiz
 import re
 import google.generativeai as genaiimport
 from datetime import date
@@ -37,6 +43,11 @@ def fetch_quiz_data(topic, num_questions):
 
     except Exception as e:
         return {"error": str(e)}    
+    
+
+
+
+
 # def fetch_quiz_data(topic, num_questions):
 #     """Fetch quiz questions from the AI API"""
 #     prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
@@ -235,36 +246,49 @@ def quiz_report(request, quiz_id):
         "responses": responses
     })
 
+   #QUIZ Report 
 @login_required
-def quiz_analysis_view(request):
-    user = request.user
-    quizzes = Quiz.objects.filter(user=user)
+def quiz_report(request, quiz_id):
+    # Fetch the quiz and ensure it's associated with the logged-in user
+    quiz = get_object_or_404(Quiz, id=quiz_id, user=request.user)
 
-    quiz_scores = [quiz.obtained_marks for quiz in quizzes]
-    quiz_totals = [quiz.total_marks for quiz in quizzes]
+    # Fetch all user responses for this quiz
+    responses = UserResponse.objects.filter(quiz=quiz, user=request.user).select_related('question')
 
-    total_obtained = sum(quiz_scores)
-    total_possible = sum(quiz_totals)
+    # Calculate the total questions, score, and unanswered questions
+    total_questions = quiz.total_questions  # This is directly from the Quiz model
+    score = responses.filter(is_correct=True).count()  # Correct answers count
 
-    average_score = round((total_obtained / total_possible) * 100, 2) if total_possible > 0 else 0
-
-    # ✅ Pie Chart Data (Correct, Incorrect, Unanswered)
-    responses = UserResponse.objects.filter(user=user)
-
-    correct = responses.filter(is_correct=True).count()
-    incorrect = responses.filter(is_correct=False).exclude(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    # Calculate unanswered questions (where selected_answer is either None or "none")
     unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    
+    # Calculate the percentage and format it to two decimal places
+    percentage = round((score / total_questions) * 100, 2) if total_questions else 0
 
-    chart_data = {
-        'Correct': correct,
-        'Incorrect': incorrect,
-        'Unanswered': unanswered,
-    }
+    # Pass the data to the template
+    return render(request, "quiz_report.html", {
+        "quiz": quiz,
+        "responses": responses,
+        "total_questions": total_questions,
+        "score": score,
+        "unanswered": unanswered,
+        "percentage": percentage,
+    })
 
-    return render(request, 'Profile.html', {
-        "user": request.user,
-        'quiz_scores': quiz_scores,
-        'total_quizzes': quizzes.count(),
+@login_required
+def profile_view(request):
+    user_quizzes = Quiz.objects.filter(user=request.user).order_by('-created_at')
+    total_quizzes = user_quizzes.count()
+
+    total_obtained = sum(quiz.obtained_marks for quiz in user_quizzes)
+    total_possible = sum(quiz.total_marks for quiz in user_quizzes)
+
+    average_score = 0
+    if total_possible > 0:
+        average_score = round((total_obtained / total_possible) * 100)
+
+    return render(request, 'profile.html', {
+        'all_quizzes': user_quizzes,  # This is used in your history section
+        'total_quizzes': total_quizzes,
         'average_score': average_score,
-        'chart_data': chart_data,
     })
