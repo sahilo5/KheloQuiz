@@ -86,7 +86,7 @@
                     {% elif percent|floatformat >= 50 %}
                       <span class="text-yellow-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
                     {% else %}
-                      <span class="text-red-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                      <span class="text-green-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
                     {% endif %}
                   {% endwith %}
                 </td>

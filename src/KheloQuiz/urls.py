@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import home ,generate_quiz,about,setting,profile
+from .views import home ,generate_quiz,about,setting
 from Gen_Quiz.views import create_quiz, quiz_question,quiz_report, quiz_analysis_view
 
 

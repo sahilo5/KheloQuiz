@@ -274,21 +274,36 @@ def quiz_report(request, quiz_id):
         "unanswered": unanswered,
         "percentage": percentage,
     })
+def quiz_analysis_view(request):
+    user = request.user
+    quizzes = Quiz.objects.filter(user=user).order_by('-created_at')
 
-@login_required
-def profile_view(request):
-    user_quizzes = Quiz.objects.filter(user=request.user).order_by('-created_at')
-    total_quizzes = user_quizzes.count()
+    quiz_scores = [quiz.obtained_marks for quiz in quizzes]
+    quiz_totals = [quiz.total_marks for quiz in quizzes]
 
-    total_obtained = sum(quiz.obtained_marks for quiz in user_quizzes)
-    total_possible = sum(quiz.total_marks for quiz in user_quizzes)
+    total_obtained = sum(quiz_scores)
+    total_possible = sum(quiz_totals)
 
-    average_score = 0
-    if total_possible > 0:
-        average_score = round((total_obtained / total_possible) * 100)
+    average_score = round((total_obtained / total_possible) * 100, 2) if total_possible > 0 else 0
 
-    return render(request, 'profile.html', {
-        'all_quizzes': user_quizzes,  # This is used in your history section
-        'total_quizzes': total_quizzes,
+    # ✅ Pie Chart Data (Correct, Incorrect, Unanswered)
+    responses = UserResponse.objects.filter(user=user)
+
+    correct = responses.filter(is_correct=True).count()
+    incorrect = responses.filter(is_correct=False).exclude(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+
+    chart_data = {
+        'Correct': correct,
+        'Incorrect': incorrect,
+        'Unanswered': unanswered,
+    }
+
+    return render(request, 'Profile.html', {
+        "user": user,
+        'quiz_scores': quiz_scores,
+        'total_quizzes': quizzes.count(),
         'average_score': average_score,
+        'chart_data': chart_data,
+        'recent_quizzes': quizzes,  # ✅ Added line to pass recent quizzes
     })
