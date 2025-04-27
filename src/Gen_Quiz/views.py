@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 import requests 
 import json
 from django.db.models import Avg
+from django.core.paginator import Paginator
 
 
 # from django.contrib.auth.decorators import login_required
@@ -274,6 +275,7 @@ def quiz_report(request, quiz_id):
         "unanswered": unanswered,
         "percentage": percentage,
     })
+
 def quiz_analysis_view(request):
     user = request.user
     quizzes = Quiz.objects.filter(user=user).order_by('-created_at')
@@ -286,9 +288,8 @@ def quiz_analysis_view(request):
 
     average_score = round((total_obtained / total_possible) * 100, 2) if total_possible > 0 else 0
 
-    # ✅ Pie Chart Data (Correct, Incorrect, Unanswered)
+    # Pie Chart Data
     responses = UserResponse.objects.filter(user=user)
-
     correct = responses.filter(is_correct=True).count()
     incorrect = responses.filter(is_correct=False).exclude(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
     unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
@@ -299,11 +300,21 @@ def quiz_analysis_view(request):
         'Unanswered': unanswered,
     }
 
+    # ✅ IMPORTANT: Do NOT limit quizzes here
     return render(request, 'Profile.html', {
         "user": user,
         'quiz_scores': quiz_scores,
         'total_quizzes': quizzes.count(),
         'average_score': average_score,
         'chart_data': chart_data,
-        'recent_quizzes': quizzes,  # ✅ Added line to pass recent quizzes
+        'recent_quizzes': quizzes,  # Send ALL quizzes, no slicing here
     })
+    
+def all_quizzes(request):
+    quizzes = Quiz.objects.filter(user=request.user).order_by('-created_at')
+    paginator = Paginator(quizzes, 10)  # 10 quizzes per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'pages/all_quizzes.html', {'page_obj': page_obj})

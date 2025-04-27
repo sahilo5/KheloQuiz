@@ -1,0 +1,112 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="mt-10 px-4">
+  <div class="bg-white/40 backdrop-blur-md rounded-2xl shadow-xl p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">📋 All Your Quizzes</h2>
+
+    {% if page_obj %}
+      <div class="hidden md:block overflow-x-auto">
+        <!-- Desktop Table -->
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gradient-to-r from-blue-100 to-purple-100 text-gray-800">
+              <th class="px-4 py-3 text-sm font-semibold">📚 Quiz Name</th>
+              <th class="px-4 py-3 text-sm font-semibold">🕒 Date</th>
+              <th class="px-4 py-3 text-sm font-semibold">📈 Score</th>
+              <th class="px-4 py-3 text-sm font-semibold">🔍 Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-300">
+            {% for quiz in page_obj %}
+              <tr class="hover:bg-white/70 transition">
+                <td class="px-4 py-3 font-medium text-blue-700 hover:underline">
+                  <a href="{% url 'quiz_report' quiz.id %}">{{ quiz.name }}</a>
+                </td>
+                <td class="px-4 py-3 text-gray-600 text-sm">
+                  {{ quiz.created_at|date:"M d, Y" }}
+                </td>
+                <td class="px-4 py-3 font-semibold">
+                  {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
+                    {% if percent|floatformat >= 80 %}
+                      <span class="text-green-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% elif percent|floatformat >= 50 %}
+                      <span class="text-yellow-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% else %}
+                      <span class="text-red-600">{{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                    {% endif %}
+                  {% endwith %}
+                </td>
+                <td class="px-4 py-3">
+                  <a href="{% url 'quiz_report' quiz.id %}" 
+                     class="inline-block px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition text-sm">
+                    View Report
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card Layout -->
+      <div class="md:hidden space-y-4">
+        {% for quiz in page_obj %}
+          <div class="bg-white/80 p-4 rounded-xl shadow-md">
+            <div class="flex flex-col space-y-1">
+              <a href="{% url 'quiz_report' quiz.id %}" class="text-lg font-semibold text-blue-700 hover:underline">
+                {{ quiz.name }}
+              </a>
+              <p class="text-sm text-gray-600">{{ quiz.created_at|date:"M d, Y - H:i" }}</p>
+              <p class="text-base font-medium">
+                {% with percent=quiz.obtained_marks|divisibleby:quiz.total_marks|floatformat:0 %}
+                  {% if percent|floatformat >= 80 %}
+                    <span class="text-green-600">📈 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% elif percent|floatformat >= 50 %}
+                    <span class="text-yellow-600">📉 {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% else %}
+                    <span class="text-red-600">⚠️ {{ quiz.obtained_marks }} / {{ quiz.total_marks }}</span>
+                  {% endif %}
+                {% endwith %}
+              </p>
+              <div class="mt-2">
+                <a href="{% url 'quiz_report' quiz.id %}" 
+                   class="inline-block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm transition">
+                  📄 View Report
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination Section -->
+      <div class="flex justify-center items-center space-x-4 mt-8">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}"
+             class="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition">
+            ⬅️ Previous
+          </a>
+        {% endif %}
+
+        <span class="px-4 py-2 text-gray-800 font-semibold">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}"
+             class="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition">
+            Next ➡️
+          </a>
+        {% endif %}
+      </div>
+
+    {% else %}
+      <p class="text-gray-600 italic text-center mt-4">
+        No quizzes found. Start generating quizzes! 🚀
+      </p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

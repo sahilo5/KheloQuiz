@@ -100,7 +100,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            {% for quiz in recent_quizzes %}
+            {% for quiz in recent_quizzes|slice:":10" %}
               <tr class="hover:bg-white/70 transition">
                 <td class="px-4 py-3 font-medium text-blue-700 hover:underline">
                   <a href="{% url 'quiz_report' quiz.id %}">{{ quiz.name }}</a>
@@ -133,7 +133,7 @@
 
       <!-- Mobile Card Layout -->
       <div class="md:hidden space-y-4">
-        {% for quiz in recent_quizzes %}
+        {% for quiz in recent_quizzes|slice:":10" %}
           <div class="bg-white/80 p-4 rounded-xl shadow-md">
             <div class="flex flex-col space-y-1">
               <a href="{% url 'quiz_report' quiz.id %}" class="text-lg font-semibold text-blue-700 hover:underline">
@@ -163,7 +163,15 @@
           </div>
         {% endfor %}
       </div>
-    {% else %}
+      {% if recent_quizzes|length > 10 %}
+      <div class="flex justify-center mt-6">
+        <a href="{% url 'all_quizzes' %}" 
+           class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold px-6 py-2 rounded-full hover:scale-105 hover:shadow-lg transition-transform">
+          ➡️ See More
+        </a>
+      </div>
+    {% endif %}
+        {% else %}
       <p class="text-gray-600 italic text-center mt-4">
         No quizzes generated yet. Start with a new quiz above! 🎯
       </p>
