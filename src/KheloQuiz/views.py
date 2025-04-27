@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from Gen_Quiz.models import Quiz,UserResponse
+from django.db.models import Avg
+
 
 def home(request):
     return render(request, 'layouts/welcome_screen.html')  
@@ -11,9 +14,3 @@ def about(request):
 
 def setting(request):
     return render(request, 'setting.html')
-
-def profile(request):
-    return render(request, 'Profile.html') 
-
-
-    

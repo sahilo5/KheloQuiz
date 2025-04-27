@@ -2,9 +2,17 @@ from django.shortcuts import render, redirect
 from .models import Quiz, Question, UserResponse
 from datetime import datetime
 from django.http import JsonResponse
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-import requests
+import requests 
 import json
+from django.db.models import Avg
+from django.core.paginator import Paginator
+
+
+# from django.contrib.auth.decorators import login_required
+# from django.http import JsonResponse
+# from .models import Quiz
 import re
 import google.generativeai as genaiimport
 from datetime import date
@@ -36,6 +44,11 @@ def fetch_quiz_data(topic, num_questions):
 
     except Exception as e:
         return {"error": str(e)}    
+    
+
+
+
+
 # def fetch_quiz_data(topic, num_questions):
 #     """Fetch quiz questions from the AI API"""
 #     prompt = f"Generate a JSON object with an array of {num_questions} multiple-choice questions on {topic}. The format should be: {{'questions': [{{'question': '...', 'options': [...], 'answer': '...', 'explanation': '...'}}]}}."
@@ -233,3 +246,75 @@ def quiz_report(request, quiz_id):
         "quiz": quiz,
         "responses": responses
     })
+
+   #QUIZ Report 
+@login_required
+def quiz_report(request, quiz_id):
+    # Fetch the quiz and ensure it's associated with the logged-in user
+    quiz = get_object_or_404(Quiz, id=quiz_id, user=request.user)
+
+    # Fetch all user responses for this quiz
+    responses = UserResponse.objects.filter(quiz=quiz, user=request.user).select_related('question')
+
+    # Calculate the total questions, score, and unanswered questions
+    total_questions = quiz.total_questions  # This is directly from the Quiz model
+    score = responses.filter(is_correct=True).count()  # Correct answers count
+
+    # Calculate unanswered questions (where selected_answer is either None or "none")
+    unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    
+    # Calculate the percentage and format it to two decimal places
+    percentage = round((score / total_questions) * 100, 2) if total_questions else 0
+
+    # Pass the data to the template
+    return render(request, "quiz_report.html", {
+        "quiz": quiz,
+        "responses": responses,
+        "total_questions": total_questions,
+        "score": score,
+        "unanswered": unanswered,
+        "percentage": percentage,
+    })
+
+def quiz_analysis_view(request):
+    user = request.user
+    quizzes = Quiz.objects.filter(user=user).order_by('-created_at')
+
+    quiz_scores = [quiz.obtained_marks for quiz in quizzes]
+    quiz_totals = [quiz.total_marks for quiz in quizzes]
+
+    total_obtained = sum(quiz_scores)
+    total_possible = sum(quiz_totals)
+
+    average_score = round((total_obtained / total_possible) * 100, 2) if total_possible > 0 else 0
+
+    # Pie Chart Data
+    responses = UserResponse.objects.filter(user=user)
+    correct = responses.filter(is_correct=True).count()
+    incorrect = responses.filter(is_correct=False).exclude(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+    unanswered = responses.filter(Q(selected_answer__isnull=True) | Q(selected_answer="")).count()
+
+    chart_data = {
+        'Correct': correct,
+        'Incorrect': incorrect,
+        'Unanswered': unanswered,
+    }
+
+    # ✅ IMPORTANT: Do NOT limit quizzes here
+    return render(request, 'Profile.html', {
+        "user": user,
+        'quiz_scores': quiz_scores,
+        'total_quizzes': quizzes.count(),
+        'average_score': average_score,
+        'chart_data': chart_data,
+        'recent_quizzes': quizzes,  # Send ALL quizzes, no slicing here
+    })
+    
+def all_quizzes(request):
+    quizzes = Quiz.objects.filter(user=request.user).order_by('-created_at')
+    paginator = Paginator(quizzes, 10)  # 10 quizzes per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'pages/all_quizzes.html', {'page_obj': page_obj})
