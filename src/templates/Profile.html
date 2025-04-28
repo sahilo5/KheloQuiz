@@ -178,6 +178,23 @@
     {% endif %}
   </div>
 </section>
+<section class="mt-10 px-4">
+  <div class="bg-white/50 backdrop-blur-md rounded-2xl shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-center text-purple-700 mb-4">🏆 Achievements</h2>
+
+    {% if badges %}
+      <div class="flex flex-wrap justify-center gap-4">
+        {% for badge in badges %}
+          <div class="bg-gradient-to-r from-green-300 to-blue-300 px-5 py-3 rounded-xl text-sm font-semibold text-gray-800 shadow">
+            {{ badge }}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-gray-500 italic">No achievements yet. Keep playing! 🚀</p>
+    {% endif %}
+  </div>
+</section>
 
 <!-- Chart.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

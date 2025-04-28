@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 import requests 
 import json
-from django.db.models import Avg
+from django.db.models import Avg,Count
 from django.core.paginator import Paginator
 
 
@@ -265,6 +265,10 @@ def quiz_report(request, quiz_id):
     
     # Calculate the percentage and format it to two decimal places
     percentage = round((score / total_questions) * 100, 2) if total_questions else 0
+    
+    # incorrect 
+    incorrect = total_questions - (score + unanswered)
+
 
     # Pass the data to the template
     return render(request, "quiz_report.html", {
@@ -274,6 +278,7 @@ def quiz_report(request, quiz_id):
         "score": score,
         "unanswered": unanswered,
         "percentage": percentage,
+        "incorrect": incorrect,
     })
 
 def quiz_analysis_view(request):
@@ -299,6 +304,21 @@ def quiz_analysis_view(request):
         'Incorrect': incorrect,
         'Unanswered': unanswered,
     }
+    # 🏆 Achievement Badges Logic
+    badges = []
+    total_quizzes = quizzes.count()
+
+    if total_quizzes >= 5:
+        badges.append("Completed 5 Quizzes 🎯")
+
+    if total_quizzes >= 10:
+        badges.append("Completed 10 Quizzes 🏅")
+
+    if average_score >= 90:
+        badges.append("Top Scorer (90%+) 🥇")
+
+    if correct >= 50:
+        badges.append("50+ Correct Answers 📚")
 
     # ✅ IMPORTANT: Do NOT limit quizzes here
     return render(request, 'Profile.html', {
@@ -308,6 +328,7 @@ def quiz_analysis_view(request):
         'average_score': average_score,
         'chart_data': chart_data,
         'recent_quizzes': quizzes,  # Send ALL quizzes, no slicing here
+        'badges': badges,
     })
     
 def all_quizzes(request):
