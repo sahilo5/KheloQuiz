@@ -1,8 +1,9 @@
 {
   "services": {
     "web": {
-      "buildCommand": "cd app && pip install -r requirements.txt",
-      "startCommand": "cd app && python manage.py runserver 0.0.0.0:$PORT"
+      "installCommand": "pip install -r app/requirements.txt",
+      "startCommand": "cd app && python manage.py runserver 0.0.0.0:$PORT",
+      "buildCommand": "cd app && python manage.py tailwind init && python manage.py tailwind install && python manage.py tailwind start && python manage.py makemigrations && python manage.py migrate"
     }
   }
 }
