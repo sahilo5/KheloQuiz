@@ -2,6 +2,6 @@
     "build": [
       "cd src && pip install -r requirements.txt"
     ],
-    "start": "python manage.py runserver 0.0.0.0:$PORT"
+    "start": "cd src && python manage.py runserver 0.0.0.0:$PORT"
   }
   
