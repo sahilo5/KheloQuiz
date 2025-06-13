@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-fpr-@i6!j@8f9o5top*))l9dny%6t)8wuw0v1d$m^4@ws101&+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -82,28 +85,33 @@ WSGI_APPLICATION = 'KheloQuiz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME", "KheloQuiz"),  
-#         "USER": os.getenv("DB_USER", "postgres"),   
-#         "PASSWORD": os.getenv("DB_PWD", "123"),  
-#         "HOST": os.getenv("DB_HOST", "localhost"), 
-#         "PORT": os.getenv("DB_PORT", "5432"), 
-#     }
-# }
+DB_LIVE = False
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "railway",  
-        "USER": "postgres",   
-        "PASSWORD":"sAWLPknpikTbLZbIOnjsjJtEiNYOsCKm",  
-        "HOST": "switchyard.proxy.rlwy.net", 
-        "PORT": "35615", 
+if DB_LIVE in ["False",False]:
+    
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "KheloQuiz"),  
+            "USER": os.getenv("DB_USER", "postgres"),   
+            "PASSWORD": os.getenv("DB_PWD", "123"),  
+            "HOST": os.getenv("DB_HOST", "localhost"), 
+            "PORT": os.getenv("DB_PORT", "5432"), 
+        }
     }
-}
+
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME"),  
+            "USER": os.getenv("DB_USER"),   
+            "PASSWORD":os.getenv("DB_PASSWORD"),  
+            "HOST": os.getenv("DB_HOST"), 
+            "PORT": os.getenv("DB_PORT"), 
+        }
+    }
 
 
 
