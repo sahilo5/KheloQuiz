@@ -1,6 +1,6 @@
 env
 # settings.py
-theme
+# theme
 __pycache__
 __pycache__/
 *.py[cod]
