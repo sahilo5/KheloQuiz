@@ -3,7 +3,7 @@
     "web": {
       "installCommand": "pip install -r app/requirements.txt",
       "startCommand": "python manage.py runserver 0.0.0.0:$PORT",
-      "buildCommand": "python manage.py tailwind init && python manage.py tailwind install && python manage.py tailwind start && python manage.py makemigrations && python manage.py migrate"
+      "buildCommand": "pip install -r app/requirements.txt && cd app && python manage.py tailwind build && python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput"
     }
   }
 }
