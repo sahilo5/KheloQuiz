@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-today = timezone.now()
 
 # Quiz Table: Stores quizzes created by users
 # Quiz Table: Stores quizzes created by users
@@ -13,7 +12,7 @@ class Quiz(models.Model):
     total_questions = models.IntegerField(default=3)
     total_marks = models.IntegerField(default=3)
     obtained_marks = models.IntegerField(default=0)
-    created_at = models.DateTimeField(default=today)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.name} - {self.topic}"
