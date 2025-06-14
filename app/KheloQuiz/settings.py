@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 import os
 
 from dotenv import load_dotenv
@@ -29,6 +30,8 @@ SECRET_KEY = 'django-insecure-fpr-@i6!j@8f9o5top*))l9dny%6t)8wuw0v1d$m^4@ws101&+
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost','127.0.0.1','awesome-flickr.up.railway.app']
+
+PORT = os.environ.get('PORT', 8000)
 
 CSRF_TRUSTED_ORIGINS = ['https://awesome-flickr.up.railway.app']
 
@@ -86,34 +89,40 @@ WSGI_APPLICATION = 'KheloQuiz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_LIVE = False
+# DB_LIVE = False
 
 
-if DB_LIVE in ["False",False]:
+# if DB_LIVE in ["False",False]:
     
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "KheloQuiz",
-            "USER": "postgres", 
-            "PASSWORD": "123",
-            "HOST": "localhost",
-            "PORT": "5432"
-        }
-    }
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": "KheloQuiz",
+#             "USER": "postgres", 
+#             "PASSWORD": "123",
+#             "HOST": "localhost",
+#             "PORT": "5432"
+#         }
+#     }
 
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME"),  
-            "USER": os.environ.get("DB_USER"),   
-            "PASSWORD":os.environ.get("DB_PASSWORD"),  
-            "HOST": os.environ.get("DB_HOST"), 
-            "PORT": os.environ.get("DB_PORT"), 
-        }
-    }
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": os.environ.get("DB_NAME"),  
+#             "USER": os.environ.get("DB_USER"),   
+#             "PASSWORD":os.environ.get("DB_PASSWORD"),  
+#             "HOST": os.environ.get("DB_HOST"), 
+#             "PORT": os.environ.get("DB_PORT"), 
+#         }
+#     }
 
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgres:123@localhost:5432/KheloQuiz',
+        conn_max_age=600
+    )
+}
 
 
 # Password validation
