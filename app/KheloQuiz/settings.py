@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'KheloQuiz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DB_LIVE = False
+DB_LIVE = True
 
 
 if DB_LIVE in ["False",False]:
