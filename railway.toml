@@ -1,4 +1,2 @@
 [build]
-commands = [
-  "python manage.py collectstatic --noinput"
-]
+builder = "docker"
