@@ -29,8 +29,11 @@ SECRET_KEY = 'django-insecure-fpr-@i6!j@8f9o5top*))l9dny%6t)8wuw0v1d$m^4@ws101&+
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','kheloquiz.up.railway.app']
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RAILWAY_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+if RAILWAY_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_DOMAIN)
+    
 CSRF_TRUSTED_ORIGINS = ['https://kheloquiz.up.railway.app']
 
 # Application definition
