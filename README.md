@@ -11,14 +11,6 @@ An AI-powered quiz web application built with **Django**, **Django REST Framewor
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
-- [Local Setup](#local-setup)
-  - [1) Clone & Virtualenv](#1-clone--virtualenv)
-  - [2) Environment Variables](#2-environment-variables)
-  - [3) Database Setup (PostgreSQL)](#3-database-setup-postgresql)
-  - [4) Install Dependencies](#4-install-dependencies)
-  - [5) Django Migrations & Superuser](#5-django-migrations--superuser)
-  - [6) Run Dev Server](#6-run-dev-server)
-  - [7) (Optional) Tailwind CSS](#7-optional-tailwind-css)
 - [Configuration](#configuration)
 - [Data Model](#data-model)
   - [Entity Relationship Overview](#entity-relationship-overview)
@@ -79,15 +71,5 @@ KheloQuiz enables dynamic quiz creation by entering **topic** (and optional **su
 
 ---
 
-## Local Setup
 
-### 1) Clone & Virtualenv
-```bash
-git clone https://github.com/sahilo5/KheloQuiz.git
-cd KheloQuiz
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
 
