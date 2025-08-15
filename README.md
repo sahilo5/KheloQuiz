@@ -1,1 +1,93 @@
-soham
+# KheloQuiz
+
+An AI-powered quiz web application built with **Django**, **Django REST Framework**, **PostgreSQL**, and **Tailwind CSS**. Users can generate quizzes from topics (optionally subtopics), attempt them (MCQ or Fill‑in‑the‑Blank), and track results over time. This README documents setup, configuration, data model, API, and common workflows.
+
+---
+
+## Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Directory Structure](#directory-structure)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Local Setup](#local-setup)
+  - [1) Clone & Virtualenv](#1-clone--virtualenv)
+  - [2) Environment Variables](#2-environment-variables)
+  - [3) Database Setup (PostgreSQL)](#3-database-setup-postgresql)
+  - [4) Install Dependencies](#4-install-dependencies)
+  - [5) Django Migrations & Superuser](#5-django-migrations--superuser)
+  - [6) Run Dev Server](#6-run-dev-server)
+  - [7) (Optional) Tailwind CSS](#7-optional-tailwind-css)
+- [Configuration](#configuration)
+- [Data Model](#data-model)
+  - [Entity Relationship Overview](#entity-relationship-overview)
+  - [Django Models](#django-models)
+- [API](#api)
+  - [Auth](#auth)
+  - [Quizzes](#quizzes)
+  - [Questions](#questions)
+  - [User Responses](#user-responses)
+  - [Examples](#examples)
+- [Scoring & Evaluation Logic](#scoring--evaluation-logic)
+- [Session & Authentication](#session--authentication)
+- [Admin Panel](#admin-panel)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+KheloQuiz enables dynamic quiz creation by entering **topic** (and optional **subtopic**). Questions may be AI‑generated (e.g., via Gemini 2.5) or curated. The app persists quizzes, questions, user answers, and evaluations in PostgreSQL and provides history for each user.
+
+---
+
+## Architecture
+- **Django + DRF** expose REST APIs for auth, quiz creation, retrieval, answering, and evaluation.
+- **PostgreSQL** stores normalized relational data.
+- **Tailwind CSS** styles Django templates or a lightweight frontend.
+- **(Optional) AI layer** generates questions which are stored as standard `Question` objects.
+
+---
+## Features
+- Create quizzes tied to a user (**topic**, **name**, **subtopic**, **date**, **total marks**)
+- Add questions (**MCQ** with options JSON, or **Fill‑in‑the‑Blank**)
+- Submit answers, auto‑evaluate correctness and marks
+- View quiz history and detailed results per user
+- Django Admin management for content and users
+- Extensible AI question generation pipeline
+
+---
+
+## Tech Stack
+- **Backend:** Django, Django REST Framework
+- **Database:** PostgreSQL
+- **Frontend:** Django Templates + Tailwind CSS (or plug in any SPA)
+- **Auth:** Django session auth (or JWT if enabled)
+- **AI:** Gemini 2.5 (optional integration layer)
+
+---
+
+## Prerequisites
+- Python 3.10+
+- PostgreSQL 13+
+- (Optional) Node.js 18+ if you plan to build Tailwind via npm
+
+---
+
+## Local Setup
+
+### 1) Clone & Virtualenv
+```bash
+git clone https://github.com/sahilo5/KheloQuiz.git
+cd KheloQuiz
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
