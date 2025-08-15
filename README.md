@@ -11,10 +11,8 @@ An AI-powered quiz web application built with **Django**, **Django REST Framewor
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
-- [Configuration](#configuration)
 - [Data Model](#data-model)
   - [Entity Relationship Overview](#entity-relationship-overview)
-  - [Django Models](#django-models)
 - [API](#api)
   - [Auth](#auth)
   - [Quizzes](#quizzes)
@@ -26,10 +24,6 @@ An AI-powered quiz web application built with **Django**, **Django REST Framewor
 - [Admin Panel](#admin-panel)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Troubleshooting](#troubleshooting)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -70,6 +64,14 @@ KheloQuiz enables dynamic quiz creation by entering **topic** (and optional **su
 - (Optional) Node.js 18+ if you plan to build Tailwind via npm
 
 ---
+## Data Model
 
+### Entity Relationship Overview
+The data model consists of the following main entities:
+
+- **User**: Represents a registered user who can create and take quizzes.
+- **Quiz**: Contains metadata about a quiz such as title, description, and creator.
+- **Question**: Stores questions related to a quiz along with multiple choice options.
+- **UserResponse**: Tracks user answers for a given quiz and question.
 
 
