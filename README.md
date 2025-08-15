@@ -13,12 +13,6 @@ An AI-powered quiz web application built with **Django**, **Django REST Framewor
 - [Prerequisites](#prerequisites)
 - [Data Model](#data-model)
   - [Entity Relationship Overview](#entity-relationship-overview)
-- [API](#api)
-  - [Auth](#auth)
-  - [Quizzes](#quizzes)
-  - [Questions](#questions)
-  - [User Responses](#user-responses)
-  - [Examples](#examples)
 - [Scoring & Evaluation Logic](#scoring--evaluation-logic)
 - [Session & Authentication](#session--authentication)
 - [Admin Panel](#admin-panel)
@@ -74,4 +68,23 @@ The data model consists of the following main entities:
 - **Question**: Stores questions related to a quiz along with multiple choice options.
 - **UserResponse**: Tracks user answers for a given quiz and question.
 
+## Scoring & Evaluation Logic
+- The system checks each answer against the correct answer stored in Question.answer.
+- Marks the answer as correct or incorrect in UserResponse.is_correct.
+- Calculates the final score as the number of correct answers divided by total questions.
+- Stores evaluation results for later retrieval.
 
+## Admin Panel
+- Accessible at /admin/
+- Superusers can manage users, quizzes, questions, and responses.
+- Provides a GUI for non-technical management of quiz content.
+
+## Deployment
+
+- Backend is deployed using Railway.
+- Steps followed:
+-- Push code to GitHub.
+-- Connect Railway project to GitHub repository.
+-- Configure environment variables in Railway (e.g., DATABASE_URL).
+-- Deploy and run python manage.py migrate to set up the database.
+-- Collect static files with python manage.py collectstatic.
