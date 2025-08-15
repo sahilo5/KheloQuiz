@@ -14,9 +14,7 @@ An AI-powered quiz web application built with **Django**, **Django REST Framewor
 - [Data Model](#data-model)
   - [Entity Relationship Overview](#entity-relationship-overview)
 - [Scoring & Evaluation Logic](#scoring--evaluation-logic)
-- [Session & Authentication](#session--authentication)
 - [Admin Panel](#admin-panel)
-- [Testing](#testing)
 - [Deployment](#deployment)
 
 ---
@@ -83,8 +81,9 @@ The data model consists of the following main entities:
 
 - Backend is deployed using Railway.
 - Steps followed:
--- Push code to GitHub.
--- Connect Railway project to GitHub repository.
--- Configure environment variables in Railway (e.g., DATABASE_URL).
--- Deploy and run python manage.py migrate to set up the database.
--- Collect static files with python manage.py collectstatic.
+  1. Push code to GitHub.
+  2. Connect Railway project to GitHub repository.
+  3. Configure environment variables in Railway (e.g., `DATABASE_URL`).
+  4. Deploy and run `python manage.py migrate` to set up the database.
+  5. Collect static files with `python manage.py collectstatic`.
+
