@@ -14,7 +14,7 @@ today = date.today()
 
 def fetch_quiz_data(topic, num_questions):
     """Fetch quiz questions from Google Gemini"""
-    genai.configure(api_key="AIzaSyAygj8I5_EpaFqww-jMHfK8bKc2Us9yoPM")  # Replace with actual key
+    genai.configure(api_key="")  # Replace with actual key
 
     model = genai.GenerativeModel("gemini-1.5-flash")
     prompt = (
